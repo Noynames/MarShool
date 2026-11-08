@@ -68,8 +68,20 @@
     .action-btn.liked { background: var(--accent-light); border-color: var(--accent); color: var(--text-main); cursor: not-allowed; }
     
     .question-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
-    .random-nick-box { background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600; }
-    .random-nick-box strong { color: var(--accent); }
+    
+    /* Блок с ником */
+    .nick-container {
+      background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; 
+      border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nick-container strong { color: var(--accent); font-size: 1rem; }
+    .edit-nick-btn {
+      background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 8px;
+      font-weight: 800; cursor: pointer; font-size: 0.75rem; transition: 0.2s;
+    }
+    .edit-nick-btn:hover { filter: brightness(0.9); }
+
     .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 1rem; resize: vertical; min-height: 100px; outline: none; }
     .submit-btn { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
     footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; padding-bottom: 20px; }
@@ -116,7 +128,13 @@
         Хочешь поделиться новостью? Пиши! Твоё сообщение появится на сайте после проверки.
       </div>
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
-        <div class="random-nick-box">Твой случайный ник: <strong id="nickname">Гость_0000</strong></div>
+        
+        <!-- БЛОК С НИКОМ -->
+        <div class="nick-container">
+          <div>Твой ник: <strong id="nickname">Гость_0000</strong></div>
+          <button type="button" class="edit-nick-btn" onclick="editNick()">Изменить</button>
+        </div>
+
         <textarea id="questionText" placeholder="Напиши свою сплетню сюда..." required></textarea>
         <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
       </form>
@@ -135,7 +153,6 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    // === ТВОИ КЛЮЧИ SUPABASE ===
     const SUPABASE_URL = 'https://owcxvgvajlbrpirwvjhr.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv';
 
@@ -148,12 +165,38 @@
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    // Загрузка данных
+    // === ГЕНЕРАЦИЯ И ИЗМЕНЕНИЕ НИКА ===
+    function generateNick() {
+      const savedNick = localStorage.getItem('userNickname');
+      if (savedNick) {
+        document.getElementById('nickname').innerText = savedNick;
+      } else {
+        const randomNum = Math.floor(100 + Math.random() * 900);
+        const emojis = ["🐱", "🦊", "👽", "👻", "🤖", "🐼", "🐸"];
+        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        const newNick = `${emoji} Гость_${randomNum}`;
+        document.getElementById('nickname').innerText = newNick;
+        localStorage.setItem('userNickname', newNick);
+      }
+    }
+
+    window.editNick = function() {
+      const currentNick = document.getElementById('nickname').innerText;
+      const newNick = prompt('Введи свой ник (макс. 15 символов):', currentNick);
+      
+      if (newNick && newNick.trim() !== '') {
+        let cleanNick = newNick.trim().substring(0, 15); // Ограничение длины
+        document.getElementById('nickname').innerText = cleanNick;
+        localStorage.setItem('userNickname', cleanNick);
+      }
+    }
+
+    // === ЗАГРУЗКА ДАННЫХ ===
     async function loadData() {
       const { data, error } = await supabase
         .from('gossips')
         .select('*')
-        .order('id', { ascending: false }); // Новые сверху
+        .order('id', { ascending: false });
 
       if (error) {
         console.error('Ошибка загрузки:', error);
@@ -165,7 +208,7 @@
       renderFeeds();
     }
 
-    // Отправка сплетни
+    // === ОТПРАВКА ===
     window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
@@ -197,8 +240,7 @@
         btn.innerText = 'Отправлено! ✅'; 
         btn.style.background = '#28a745';
         textInput.value = ''; 
-        generateNick();
-        loadData(); // Обновляем ленту
+        loadData();
         setTimeout(() => { 
           btn.innerText = 'Отправить'; 
           btn.style.background = ''; 
@@ -208,10 +250,9 @@
       }
     };
 
-    // Реакции
+    // === РЕАКЦИИ ===
     window.likeGossip = async function(id) {
       if (localStorage.getItem(`voted_${id}_like`)) return;
-      
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
         const newLikes = (gossip.likes || 0) + 1;
@@ -223,7 +264,6 @@
 
     window.witnessGossip = async function(id) {
       if (localStorage.getItem(`voted_${id}_witness`)) return;
-      
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
         const newWitness = (gossip.witness || 0) + 1;
@@ -233,7 +273,7 @@
       }
     }
 
-    // Админка
+    // === АДМИНКА ===
     window.publishGossip = async function(id) {
       await supabase.from('gossips').update({ status: 'published' }).eq('id', id);
       alert('Сплетня опубликована!');
@@ -276,7 +316,7 @@
       }
     }
 
-    // Отрисовка
+    // === ОТРИСОВКА ===
     function hasVoted(id, type) {
       return localStorage.getItem(`voted_${id}_${type}`) === 'true';
     }
@@ -369,13 +409,6 @@
       document.body.classList.toggle('dark-theme');
       const btn = document.getElementById('themeBtn');
       btn.innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
-    }
-
-    function generateNick() {
-      const randomNum = Math.floor(100 + Math.random() * 900);
-      const emojis = ["🐱", "🦊", "👽", "👻", "🤖", "🐼", "🐸"];
-      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-      document.getElementById('nickname').innerText = `${emoji} Гость_${randomNum}`;
     }
 
     // Запуск

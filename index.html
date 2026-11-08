@@ -316,7 +316,7 @@
       
       btn.innerText = 'Сохранение...'; btn.disabled = true;
 
-      // 1. СНАЧАЛА СОХРАНЯЕМ В БАЗУ (это быстро и работает всегда)
+      // 1. СНАЧАЛА СОХРАНЯЕМ В БАЗУ (в админку)
       try {
         const newGossip = {
           author: nick,
@@ -328,24 +328,29 @@
         };
         await push(gossipRef, newGossip);
 
-        // Показываем успех сразу же
+        // Показываем успех сразу же (пользователь счастлив)
         btn.innerText = 'Отправлено на проверку! ✅'; 
         btn.style.background = '#28a745';
         textInput.value = ''; 
         generateNick();
-        setTimeout(() => { btn.innerText = 'Отправить сплетню'; btn.style.background = ''; btn.disabled = false; }, 3000);
+        setTimeout(() => { 
+          btn.innerText = 'Отправить сплетню'; 
+          btn.style.background = ''; 
+          btn.disabled = false; 
+          openTab('gossips', document.querySelector('.nav-btn')); // Перекидываем на ленту
+        }, 2000);
 
-        // 2. В ФОНЕ ПЫТАЕМСЯ ОТПРАВИТЬ В ТЕЛЕГРАМ (пользователь этого не видит)
+        // 2. ТЕПЕРЬ В ФОНЕ ОТПРАВЛЯЕМ В ТЕЛЕГРАМ
         const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
         const TG_CHAT_ID = '6474419939'; 
         const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textValue}`;
         
-        // Отправляем без await, чтобы не тормозить пользователя
+        // Отправляем без await (не тормозим сайт)
         fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' })
-        }).catch(e => console.log('Телеграм заблокирован, но сплетня в базе.'));
+        }).catch(e => console.log('Telegram error, but saved to Firebase'));
 
       } catch (error) {
         // Если упала база (нет интернета вообще)

@@ -103,7 +103,9 @@
 
   <main class="card">
     <div id="gossips" class="tab-content active">
-      <div class="feed-container" id="mainFeed"></div>
+      <div class="feed-container" id="mainFeed">
+        <div class="empty-feed">Загрузка...</div>
+      </div>
     </div>
     <div id="top" class="tab-content">
       <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-weight: 600;">Самые горячие сплетни 🔥</div>
@@ -130,45 +132,191 @@
   </main>
   <footer>© 2026 Сплетни Марьяновской школы</footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCy8bWhsV0L8YFUJJgFxUlXa1sZN1rMZBk",
-      authDomain: "maryanov-school.firebaseapp.com",
-      projectId: "maryanov-school",
-      storageBucket: "maryanov-school.firebasestorage.app",
-      messagingSenderId: "623089032133",
-      appId: "1:623089032133:web:6c84ef51d7dae2158fc9ac",
-      databaseURL: "https://maryanov-school-default-rtdb.firebaseio.com/"
+  <script>
+    // === ТВОИ ДАННЫЕ GITHUB ===
+    const GITHUB_USER = 'Noyname';
+    const GITHUB_REPO = 'MarShool';
+    const GITHUB_TOKEN = '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';
+    const FILE_PATH = 'gossips.json';
+    const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FILE_PATH}`;
+    
+    const HEADERS = {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const gossipRef = ref(db, 'gossips');
-
     let allGossips = [];
+    let currentSha = null;
     let adminClicks = 0;
     let currentAdminView = 'pending';
 
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    onValue(gossipRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        allGossips = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-      } else {
-        allGossips = [];
+    // === ЗАГРУЗКА ДАННЫХ ===
+    async function loadData() {
+      try {
+        const res = await fetch(API_URL, { headers: HEADERS });
+        if (!res.ok) throw new Error('Ошибка загрузки');
+        const data = await res.json();
+        
+        currentSha = data.sha;
+        // Декодируем Base64 (с поддержкой кириллицы)
+        const content = decodeURIComponent(escape(atob(data.content)));
+        allGossips = JSON.parse(content || "[]");
+        
+        renderFeeds();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('mainFeed').innerHTML = `<div class="empty-feed">Ошибка загрузки ленты. Проверьте интернет.</div>`;
       }
+    }
+
+    // === СОХРАНЕНИЕ В GITHUB ===
+    async function saveData(newData) {
+      try {
+        // Кодируем в Base64 (с поддержкой кириллицы)
+        const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
+        
+        const body = {
+          message: 'Обновление сплетен',
+          content: contentEncoded,
+          sha: currentSha
+        };
+
+        const res = await fetch(API_URL, {
+          method: 'PUT',
+          headers: HEADERS,
+          body: JSON.stringify(body)
+        });
+
+        if (!res.ok) throw new Error('Ошибка сохранения');
+        
+        const resData = await res.json();
+        currentSha = resData.content.sha; // Обновляем SHA для следующего сохранения
+        allGossips = newData;
+        renderFeeds();
+        return true;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    }
+
+    // === ОТПРАВКА СПЛЕТНИ ===
+    window.sendMessage = async function(event) {
+      event.preventDefault();
+      const btn = document.getElementById('sendBtn');
+      const textInput = document.getElementById('questionText');
+      const nick = document.getElementById('nickname').innerText;
+      const textValue = textInput.value;
+
+      btn.innerText = 'Отправка...'; 
+      btn.disabled = true;
+
+      const newGossip = {
+        id: Date.now().toString(),
+        author: nick,
+        emoji: "🦊",
+        text: textValue,
+        likes: 0,
+        witness: 0,
+        status: "pending"
+      };
+
+      const newData = [...allGossips, newGossip];
+      const success = await saveData(newData);
+
+      if (success) {
+        btn.innerText = 'Отправлено! ✅'; 
+        btn.style.background = '#28a745';
+        textInput.value = ''; 
+        generateNick();
+        setTimeout(() => { 
+          btn.innerText = 'Отправить'; 
+          btn.style.background = ''; 
+          btn.disabled = false; 
+          openTab('gossips', document.querySelector('.nav-btn'));
+        }, 2000);
+      } else {
+        alert('Ошибка интернета! Не удалось сохранить.');
+        btn.innerText = 'Отправить'; 
+        btn.disabled = false;
+      }
+    };
+
+    // === РЕАКЦИИ ===
+    window.likeGossip = async function(id) {
+      if (localStorage.getItem(`voted_${id}_like`)) return;
+      
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        gossip.likes = (gossip.likes || 0) + 1;
+        localStorage.setItem(`voted_${id}_like`, 'true');
+        // Сохраняем в фоне (не блокируем интерфейс)
+        saveData(allGossips);
+      }
+    }
+
+    window.witnessGossip = async function(id) {
+      if (localStorage.getItem(`voted_${id}_witness`)) return;
+      
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        gossip.witness = (gossip.witness || 0) + 1;
+        localStorage.setItem(`voted_${id}_witness`, 'true');
+        saveData(allGossips);
+      }
+    }
+
+    // === АДМИНКА ===
+    window.publishGossip = async function(id) {
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        gossip.status = 'published';
+        await saveData(allGossips);
+        alert('Сплетня опубликована!');
+      }
+    }
+
+    window.deleteGossip = async function(id) {
+      if(confirm('Точно удалить эту сплетню?')) {
+        const newData = allGossips.filter(g => g.id !== id);
+        await saveData(newData);
+        alert('Сплетня удалена!');
+      }
+    }
+
+    window.switchAdminTab = function(tab) {
+      currentAdminView = tab;
+      document.getElementById('btnAdminPending').classList.remove('active');
+      document.getElementById('btnAdminPublished').classList.remove('active');
+      document.getElementById('btnAdmin' + (tab === 'pending' ? 'Pending' : 'Published')).classList.add('active');
       renderFeeds();
-    });
+    }
 
-    const mainFeed = document.getElementById('mainFeed');
-    const topFeed = document.getElementById('topFeed');
-    const adminFeed = document.getElementById('adminFeed');
+    window.openAdmin = function() {
+      adminClicks++;
+      if (adminClicks >= 5) {
+        const pass = prompt('Введите пароль для доступа к админке:');
+        if (pass === ADMIN_PASSWORD) {
+          const answer = prompt('Секретный вопрос: В каком году ты родился?');
+          if (answer === ADMIN_ANSWER) {
+            document.getElementById('adminTabBtn').style.display = 'block';
+            alert('Админка разблокирована!');
+            openTab('admin', document.getElementById('adminTabBtn'));
+          } else if (answer !== null) {
+            alert('Неверный ответ на секретный вопрос!');
+          }
+        } else if (pass !== null) {
+          alert('Неверный пароль!');
+        }
+        adminClicks = 0;
+      }
+    }
 
+    // === ОТРИСОВКА ===
     function hasVoted(id, type) {
       return localStorage.getItem(`voted_${id}_${type}`) === 'true';
     }
@@ -176,6 +324,10 @@
     function renderFeeds() {
       const published = allGossips.filter(g => g.status === 'published').reverse();
       const pending = allGossips.filter(g => g.status === 'pending').reverse();
+
+      const mainFeed = document.getElementById('mainFeed');
+      const topFeed = document.getElementById('topFeed');
+      const adminFeed = document.getElementById('adminFeed');
 
       if (published.length === 0) {
         mainFeed.innerHTML = `<div class="empty-feed"><span class="icon">📭</span><h3>Пока сплетен нет...</h3><p>Стань первым, кто предложит новость!</p></div>`;
@@ -190,10 +342,6 @@
         topFeed.innerHTML = sorted.map(g => renderCard(g, true)).join('');
       }
 
-      renderAdminFeed(published, pending);
-    }
-
-    function renderAdminFeed(published, pending) {
       if (currentAdminView === 'pending') {
         if (pending.length === 0) {
           adminFeed.innerHTML = `<div class="empty-feed">Нет новых сплетен на проверку</div>`;
@@ -248,107 +396,6 @@
       `;
     }
 
-    window.likeGossip = async function(id) {
-      if (hasVoted(id, 'like')) return;
-      const gossip = allGossips.find(g => g.id === id);
-      if (gossip) {
-        await set(ref(db, `gossips/${id}/likes`), (gossip.likes || 0) + 1);
-        localStorage.setItem(`voted_${id}_like`, 'true');
-      }
-    }
-
-    window.witnessGossip = async function(id) {
-      if (hasVoted(id, 'witness')) return;
-      const gossip = allGossips.find(g => g.id === id);
-      if (gossip) {
-        await set(ref(db, `gossips/${id}/witness`), (gossip.witness || 0) + 1);
-        localStorage.setItem(`voted_${id}_witness`, 'true');
-      }
-    }
-
-    window.switchAdminTab = function(tab) {
-      currentAdminView = tab;
-      document.getElementById('btnAdminPending').classList.remove('active');
-      document.getElementById('btnAdminPublished').classList.remove('active');
-      document.getElementById('btnAdmin' + (tab === 'pending' ? 'Pending' : 'Published')).classList.add('active');
-      renderFeeds();
-    }
-
-    window.publishGossip = async function(id) {
-      await update(ref(db, `gossips/${id}`), { status: 'published' });
-      alert('Сплетня опубликована!');
-    }
-
-    window.deleteGossip = async function(id) {
-      if(confirm('Точно удалить эту сплетню?')) {
-        await remove(ref(db, `gossips/${id}`));
-        alert('Сплетня удалена!');
-      }
-    }
-
-    window.openAdmin = function() {
-      adminClicks++;
-      if (adminClicks >= 5) {
-        const pass = prompt('Введите пароль для доступа к админке:');
-        if (pass === ADMIN_PASSWORD) {
-          const answer = prompt('Секретный вопрос: В каком году ты родился?');
-          if (answer === ADMIN_ANSWER) {
-            document.getElementById('adminTabBtn').style.display = 'block';
-            alert('Админка разблокирована!');
-            openTab('admin', document.getElementById('adminTabBtn'));
-          } else if (answer !== null) {
-            alert('Неверный ответ на секретный вопрос!');
-          }
-        } else if (pass !== null) {
-          alert('Неверный пароль!');
-        }
-        adminClicks = 0;
-      }
-    }
-
-    // ОТПРАВКА ТОЛЬКО В БАЗУ ДАННЫХ (БЕЗ ТЕЛЕГРАМА И ЗАВИСАНИЙ)
-    window.sendMessage = async function(event) {
-      event.preventDefault();
-      const btn = document.getElementById('sendBtn');
-      const textInput = document.getElementById('questionText');
-      const nick = document.getElementById('nickname').innerText;
-      const textValue = textInput.value;
-      
-      btn.innerText = 'Отправка...'; 
-      btn.disabled = true;
-
-      try {
-        // Сохраняем сплетню сразу в базу данных
-        const newGossip = {
-          author: nick,
-          emoji: "🦊",
-          text: textValue,
-          likes: 0,
-          witness: 0,
-          status: "pending"
-        };
-        await push(gossipRef, newGossip);
-
-        // Показываем успех
-        btn.innerText = 'Отправлено! ✅'; 
-        btn.style.background = '#28a745';
-        textInput.value = ''; 
-        generateNick();
-        setTimeout(() => { 
-          btn.innerText = 'Отправить'; 
-          btn.style.background = ''; 
-          btn.disabled = false; 
-          openTab('gossips', document.querySelector('.nav-btn'));
-        }, 2000);
-
-      } catch (error) {
-        // Если база данных не работает
-        alert('Ошибка интернета! Проверьте подключение.');
-        btn.innerText = 'Отправить'; 
-        btn.disabled = false;
-      }
-    };
-
     window.openTab = function(tabName, btn) {
       let i, tabcontent = document.getElementsByClassName("tab-content");
       for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
@@ -370,7 +417,12 @@
       const emoji = emojis[Math.floor(Math.random() * emojis.length)];
       document.getElementById('nickname').innerText = `${emoji} Гость_${randomNum}`;
     }
-    window.onload = generateNick;
+
+    // Запуск
+    window.onload = () => {
+      generateNick();
+      loadData();
+    };
   </script>
 </body>
 </html>

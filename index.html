@@ -3,254 +3,231 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Сплетни марьявской школы</title>
+  <title>Сплетни Марьяновской школы</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-color: #fcf9f2; --dot-color: #f0e6d2; --card-bg: #ffffff;
+      --text-main: #4a3f35; --text-muted: #9c7e68; --accent: #ff9e7a; --accent-light: #ffd8b4; --border: #f0e6d2;
+    }
+    body.dark-theme {
+      --bg-color: #1a1a1a; --dot-color: #2a2a2a; --card-bg: #242424;
+      --text-main: #e0e0e0; --text-muted: #999999; --accent: #ff8a5c; --accent-light: #3d2a20; --border: #333333;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      font-family: 'Nunito', sans-serif;
-      background-color: #fcf9f2;
-      background-image: radial-gradient(#f0e6d2 2px, transparent 2px);
-      background-size: 30px 30px;
-      color: #4a3f35;
-      min-height: 100vh;
-      padding-bottom: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: 'Nunito', sans-serif; background-color: var(--bg-color);
+      background-image: radial-gradient(var(--dot-color) 2px, transparent 2px); background-size: 30px 30px;
+      color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      transition: background-color 0.3s, color 0.3s;
     }
-
-    .site-header {
-      text-align: center;
-      padding: 40px 20px 20px;
-      z-index: 2;
+    .theme-toggle {
+      position: absolute; top: 20px; right: 20px; background: var(--card-bg); border: 2px solid var(--border);
+      border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; z-index: 100;
     }
-
-    .site-header h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #7a5c46;
-      line-height: 1.2;
-      margin-bottom: 8px;
-    }
-
-    .site-header p {
-      font-size: 1rem;
-      color: #9c7e68;
-      font-weight: 600;
-    }
-
+    .site-header { text-align: center; padding: 40px 20px 20px; z-index: 2; width: 100%; }
+    .site-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+    .site-header p { font-size: 1rem; color: var(--text-muted); font-weight: 600; }
     .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
-      position: relative;
-      z-index: 1;
-      background: #fff;
-      padding: 8px;
-      border-radius: 20px;
-      border: 2px solid #f0e6d2;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 90%;
-      max-width: 480px;
-      box-shadow: 0 6px 15px rgba(180, 160, 140, 0.1);
+      display: flex; gap: 10px; margin-bottom: 25px; background: var(--card-bg); padding: 8px;
+      border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center;
+      width: 90%; max-width: 480px; box-shadow: 0 6px 15px rgba(0,0,0,0.05);
     }
-
     .nav-btn {
-      background: transparent;
-      border: none;
-      color: #9c7e68;
-      font-size: 0.95rem;
-      font-weight: 800;
-      padding: 12px 20px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      flex: 1;
+      background: transparent; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 800;
+      padding: 12px 15px; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; flex: 1;
     }
-
-    .nav-btn:hover { color: #7a5c46; }
-    .nav-btn.active {
-      background: #ffd8b4;
-      color: #7a5c46;
-      box-shadow: 0 2px 8px rgba(255, 158, 122, 0.3);
-    }
-
+    .nav-btn.active { background: var(--accent-light); color: var(--text-main); }
     .card {
-      position: relative;
-      z-index: 1;
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 30px 25px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(180, 160, 140, 0.2);
-      border: 2px solid #f0e6d2;
+      background: var(--card-bg); border-radius: 24px; padding: 25px 20px; max-width: 480px;
+      width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--border); margin-bottom: 40px;
     }
-
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-    .feed-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      max-height: 450px;
-      overflow-y: auto;
-      padding-right: 5px;
+    .feed-container { display: flex; flex-direction: column; gap: 20px; }
+    .gossip-card {
+      background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border);
+      text-align: left; overflow: hidden; display: flex; flex-direction: column;
     }
-
-    .feed-container::-webkit-scrollbar { width: 6px; }
-    .feed-container::-webkit-scrollbar-thumb { background: #f0e6d2; border-radius: 10px; }
-
-    .empty-feed {
-      text-align: center;
-      padding: 40px 20px;
-      color: #9c7e68;
-      background: #fcf9f2;
-      border-radius: 16px;
-      border: 2px dashed #f0e6d2;
+    .gossip-image { width: 100%; height: 180px; object-fit: cover; border-bottom: 2px solid var(--border); }
+    .gossip-content { padding: 15px; }
+    .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
+    .card-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .action-btn {
+      background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 8px 12px;
+      font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease; font-family: inherit;
     }
-    
-    .empty-feed .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
-    .empty-feed h3 { color: #7a5c46; font-size: 1.2rem; margin-bottom: 5px; }
-    .empty-feed p { font-size: 0.9rem; }
-
-    /* --- ФОРМА ПРЕДЛОЖКИ --- */
+    .action-btn.liked { background: var(--accent-light); border-color: var(--accent); color: var(--text-main); }
+    .action-btn:disabled { cursor: not-allowed; opacity: 0.7; }
     .question-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
-    .random-nick-box { background: #fff4e6; padding: 12px; border-radius: 12px; font-size: 0.9rem; border: 2px dashed #ffd8b4; margin-bottom: 5px; color: #7a5c46; font-weight: 600; }
-    .random-nick-box strong { color: #d97746; }
-    
-    .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #f0e6d2; background: #fcf9f2; color: #4a3f35; font-family: inherit; font-size: 1rem; resize: vertical; min-height: 100px; outline: none; transition: border 0.3s; }
-    .question-form textarea:focus { border-color: #ff9e7a; }
-    
-    /* ПРЕДУПРЕЖДЕНИЕ ПРО VPN */
-    .vpn-warning {
-      background: #fff3cd;
-      color: #856404;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      border: 1px solid #ffeeba;
-      text-align: center;
-    }
-    
-    .submit-btn { background: #ff9e7a; color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; box-shadow: 0 6px 15px rgba(255, 158, 122, 0.3); }
-    .submit-btn:hover { transform: translateY(-2px); background: #ff8a5c; }
-    .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    footer { text-align: center; margin-top: 28px; font-size: 0.8rem; color: #9c7e68; font-weight: 600; padding-bottom: 20px; }
-
-    @media (max-width: 480px) {
-      .card { padding: 25px 18px; }
-      h1 { font-size: 1.6rem; }
-      .nav-btn { padding: 10px 15px; font-size: 0.85rem; }
-    }
+    .random-nick-box { background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600; }
+    .random-nick-box strong { color: var(--accent); }
+    .vpn-warning { background: #fff3cd; color: #856404; padding: 10px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; border: 1px solid #ffeeba; text-align: center; }
+    .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 1rem; resize: vertical; min-height: 100px; outline: none; }
+    .submit-btn { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
+    .submit-btn:hover { transform: translateY(-2px); filter: brightness(0.9); }
+    .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+    footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; padding-bottom: 20px; }
+    .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: 16px; border: 2px dashed var(--border); }
+    .empty-feed .icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+    .empty-feed h3 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 5px; }
   </style>
 </head>
 <body>
-
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
   <header class="site-header">
-    <h1>Сплетни марьявской школы</h1>
+    <h1>Сплетни Марьяновской школы</h1>
     <p>Только свежие новости 🤫</p>
   </header>
-
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
+    <button class="nav-btn" onclick="openTab('top', this)">🏆 Топ</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
   </div>
-
   <main class="card">
     <div id="gossips" class="tab-content active">
-      <div class="feed-container">
-        <div class="empty-feed">
-          <span class="icon">📭</span>
-          <h3>Пока сплетен нет...</h3>
-          <p>Но ты можешь стать первым!<br>Перейди во вкладку «Предложить».</p>
-        </div>
-      </div>
+      <div class="feed-container" id="mainFeed"></div>
     </div>
-
+    <div id="top" class="tab-content">
+      <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-weight: 600;">Самые горячие сплетни 🔥</div>
+      <div class="feed-container" id="topFeed"></div>
+    </div>
     <div id="suggest" class="tab-content">
-      <div style="text-align: center; margin-bottom: 15px; color: #9c7e68; font-size: 0.95rem; font-weight: 600;">
-        Хочешь поделиться новостью? Пиши! Твоё сообщение придет админу.
+      <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
+        Хочешь поделиться новостью? Пиши! Твоё сообщение появится на сайте после проверки.
       </div>
-      
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
         <div class="random-nick-box">Твой случайный ник: <strong id="nickname">Гость_0000</strong></div>
-        
-        <!-- ПРЕДУПРЕЖДЕНИЕ ПРО VPN -->
-        <div class="vpn-warning">
-          ⚠️ Если кнопка долго грузится и пишет ошибку, включите VPN!
-        </div>
-
         <textarea id="questionText" placeholder="Напиши свою сплетню сюда..." required></textarea>
         <button type="submit" class="submit-btn" id="sendBtn">Отправить сплетню</button>
       </form>
     </div>
   </main>
+  <footer>© 2026 Сплетни Марьяновской школы</footer>
 
-  <footer>© 2026 Сплетни марьявской школы</footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  <script>
-    // 1. Никнейм
-    function generateNick() {
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
-      document.getElementById('nickname').innerText = 'Гость_' + randomNum;
+    // ТВОИ КЛЮЧИ
+    const firebaseConfig = {
+      apiKey: "AIzaSyCy8bWhsV0L8YFUJJgFxUlXa1sZN1rMZBk",
+      authDomain: "maryanov-school.firebaseapp.com",
+      projectId: "maryanov-school",
+      storageBucket: "maryanov-school.firebasestorage.app",
+      messagingSenderId: "623089032133",
+      appId: "1:623089032133:web:6c84ef51d7dae2158fc9ac",
+      databaseURL: "https://maryanov-school-default-rtdb.firebaseio.com/" // ВАЖНО: Ссылка на базу данных
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const gossipRef = ref(db, 'gossips');
+
+    let allGossips = [];
+    // Следим за обновлениями в базе
+    onValue(gossipRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        allGossips = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        const published = allGossips.filter(g => g.status === 'published').reverse();
+        renderFeed(published);
+      } else {
+        renderFeed([]);
+      }
+    });
+
+    const mainFeed = document.getElementById('mainFeed');
+    const topFeed = document.getElementById('topFeed');
+
+    function renderCard(gossip, isTop = false) {
+      return `
+        <div class="gossip-card">
+          <div class="gossip-content">
+            <div class="gossip-author">${gossip.emoji || '🦊'} ${gossip.author} ${isTop ? '<span style="background:gold; color:#000; font-size:0.7rem; padding:2px 6px; border-radius:10px; margin-left:5px;">🏆 ТОП</span>' : ''}</div>
+            <div class="gossip-text">${gossip.text}</div>
+            <div class="card-actions">
+              <button class="action-btn like-btn" onclick="likeGossip('${gossip.id}')">🔥 <span>${gossip.likes || 0}</span></button>
+              <button class="action-btn witness-btn" onclick="witnessGossip('${gossip.id}')">👁️ <span>${gossip.witness || 0}</span></button>
+            </div>
+          </div>
+        </div>
+      `;
     }
-    window.onload = generateNick;
 
-    // 2. ТЕЛЕГРАМ БОТ (БЕЗ ПРОКСИ)
-    const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
-    const TG_CHAT_ID = '6474419939'; 
+    function renderFeed(publishedGossips) {
+      if (publishedGossips.length === 0) {
+        mainFeed.innerHTML = `<div class="empty-feed"><span class="icon">📭</span><h3>Пока сплетен нет...</h3><p>Стань первым, кто предложит новость!</p></div>`;
+        topFeed.innerHTML = `<div class="empty-feed">Пока пусто</div>`;
+        return;
+      }
+      
+      mainFeed.innerHTML = publishedGossips.map(g => renderCard(g)).join('');
+      const sorted = [...publishedGossips].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
+      topFeed.innerHTML = sorted.map(g => renderCard(g, true)).join('');
+    }
 
-    async function sendMessage(event) {
+    // Лайки и Свидетели
+    window.likeGossip = async function(id) {
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        await set(ref(db, `gossips/${id}/likes`), (gossip.likes || 0) + 1);
+      }
+    }
+    window.witnessGossip = async function(id) {
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        await set(ref(db, `gossips/${id}/witness`), (gossip.witness || 0) + 1);
+      }
+    }
+
+    // Отправка сплетни
+    window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
       const textInput = document.getElementById('questionText');
       const nick = document.getElementById('nickname').innerText;
-      const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textInput.value}`;
       
-      btn.innerText = 'Отправка...'; 
-      btn.disabled = true;
+      btn.innerText = 'Отправка...'; btn.disabled = true;
 
-      // Таймер на 7 секунд (чтобы не висло вечно)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const newGossip = {
+        author: nick,
+        emoji: "🦊", // Можно сделать рандом
+        text: textInput.value,
+        likes: 0,
+        witness: 0,
+        status: "pending" // Ждет модерации
+      };
 
       try {
-        const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        await push(gossipRef, newGossip);
+        
+        // Отправляем уведомление в Телеграм (код из прошлого)
+        const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
+        const TG_CHAT_ID = '6474419939';
+        const msg = `⚠️ *СПЛЕТНЯ НА МОДЕРАЦИИ*\n\n👤 От: ${nick}\n💬 Текст: ${textInput.value}\n\n✅ Чтобы опубликовать, ответь на это сообщение словом "Да".`;
+        
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' }),
-          signal: controller.signal
+          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: msg, parse_mode: 'Markdown' })
         });
-        
-        clearTimeout(timeoutId);
 
-        if (response.ok) {
-          btn.innerText = 'Отправлено! ✅'; btn.style.background = '#28a745';
-          textInput.value = ''; generateNick();
-          setTimeout(() => { btn.innerText = 'Отправить сплетню'; btn.style.background = ''; btn.disabled = false; }, 3000);
-        } else { throw new Error(); }
+        btn.innerText = 'Отправлено на проверку! ✅'; btn.style.background = '#28a745';
+        textInput.value = ''; generateNick();
+        setTimeout(() => { btn.innerText = 'Отправить сплетню'; btn.style.background = ''; btn.disabled = false; }, 3000);
       } catch (error) {
-        clearTimeout(timeoutId);
-        // Выдаем ошибку с упоминанием VPN
-        alert('Ошибка отправки!\n\nСкорее всего, ваш провайдер блокирует Telegram. Пожалуйста, включите VPN и попробуйте еще раз!');
-        
-        btn.innerText = 'Отправить сплетню'; 
-        btn.style.background = ''; 
-        btn.disabled = false; 
+        alert('Ошибка при отправке. Проверьте интернет.');
+        btn.innerText = 'Отправить сплетню'; btn.disabled = false;
       }
-    }
+    };
 
-    // 3. ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
-    function openTab(tabName, btn) {
+    // Вкладки и тема
+    window.openTab = function(tabName, btn) {
       let i, tabcontent = document.getElementsByClassName("tab-content");
       for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
       let tablinks = document.getElementsByClassName("nav-btn");
@@ -258,6 +235,20 @@
       document.getElementById(tabName).classList.add("active");
       btn.classList.add("active");
     }
+    
+    window.toggleTheme = function() {
+      document.body.classList.toggle('dark-theme');
+      const btn = document.getElementById('themeBtn');
+      btn.innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+    }
+
+    function generateNick() {
+      const randomNum = Math.floor(100 + Math.random() * 900);
+      const emojis = ["🐱", "🦊", "👽", "👻", "🤖", "🐼", "🐸"];
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+      document.getElementById('nickname').innerText = `${emoji} Гость_${randomNum}`;
+    }
+    window.onload = generateNick;
   </script>
 </body>
 </html>

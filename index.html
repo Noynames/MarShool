@@ -196,43 +196,71 @@
       btn.innerText = 'Отправка...'; 
       btn.disabled = true;
 
-      // Создаем "таймер", который прервет запрос, если он висит дольше 7 секунд
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const telegramUrl = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage`;
+      const payload = JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' });
+      
+      // Список прокси-серверов (если Telegram заблокирован)
+      const proxies = [
+        'https://corsproxy.io/?',
+        'https://api.allorigins.win/raw?url=',
+        'https://cors-anywhere.herokuapp.com/'
+      ];
 
+      let success = false;
+
+      // 1. Пробуем отправить напрямую
       try {
-        const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // Ждем 3 секунды
+
+        const response = await fetch(telegramUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' }),
-          signal: controller.signal // Привязываем таймер к запросу
+          body: payload,
+          signal: controller.signal
         });
-
-        clearTimeout(timeoutId); // Если успели, отключаем таймер
-
-        if (response.ok) {
-          btn.innerText = 'Отправлено! ✅'; 
-          btn.style.background = '#28a745';
-          textInput.value = ''; 
-          generateNick();
-          setTimeout(() => { 
-            btn.innerText = 'Отправить сплетню'; 
-            btn.style.background = ''; 
-            btn.disabled = false; 
-          }, 3000);
-        } else { 
-          throw new Error(); 
-        }
-      } catch (error) {
         clearTimeout(timeoutId);
-        
-        // Если это была ошибка таймаута (телефон долго грузит)
-        if (error.name === 'AbortError') {
-          alert('Телеграм не отвечает. Пожалуйста, проверь интернет и попробуй еще раз!');
-        } else {
-          alert('Ошибка отправки. Возможно, бот не активирован.');
+
+        if (response.ok) success = true;
+      } catch (e) {
+        console.log('Напрямую не удалось, пробуем прокси...');
+      }
+
+      // 2. Если напрямую не вышло (VPN выключен), пробуем через прокси
+      if (!success) {
+        for (let proxy of proxies) {
+          try {
+            const proxyUrl = `${proxy}${encodeURIComponent(telegramUrl)}`;
+            // Для некоторых прокси нужно отправлять данные как форму, а не JSON
+            const response = await fetch(proxyUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: payload
+            });
+
+            if (response.ok) {
+              success = true;
+              break; // Если сработало, выходим из цикла
+            }
+          } catch (e) {
+            console.log('Прокси не сработал:', proxy);
+          }
         }
-        
+      }
+
+      // 3. Показываем результат
+      if (success) {
+        btn.innerText = 'Отправлено! ✅'; 
+        btn.style.background = '#28a745';
+        textInput.value = ''; 
+        generateNick();
+        setTimeout(() => { 
+          btn.innerText = 'Отправить сплетню'; 
+          btn.style.background = ''; 
+          btn.disabled = false; 
+        }, 3000);
+      } else {
+        alert('Не удалось отправить. Возможно, провайдер сильно блокирует связь. Попробуй еще раз или включи VPN.');
         btn.innerText = 'Отправить сплетню'; 
         btn.style.background = ''; 
         btn.disabled = false; 

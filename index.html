@@ -306,7 +306,7 @@
       }
     }
 
-    // БЕЗОПАСНАЯ ОТПРАВКА (ТОЛЬКО В БАЗУ И БОТА, БЕЗ ССЫЛОК НА ТВОЙ ПРОФИЛЬ)
+    // ОТПРАВКА ТОЛЬКО В БАЗУ ДАННЫХ (БЕЗ ТЕЛЕГРАМА И ЗАВИСАНИЙ)
     window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
@@ -314,14 +314,11 @@
       const nick = document.getElementById('nickname').innerText;
       const textValue = textInput.value;
       
-      btn.innerText = 'Отправка...'; btn.disabled = true;
-
-      // Таймаут на 3 секунды. Если база не отвечает, мы просто прекращаем ждать.
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      btn.innerText = 'Отправка...'; 
+      btn.disabled = true;
 
       try {
-        // 1. Отправляем в базу данных (для админки)
+        // Сохраняем сплетню сразу в базу данных
         const newGossip = {
           author: nick,
           emoji: "🦊",
@@ -331,8 +328,6 @@
           status: "pending"
         };
         await push(gossipRef, newGossip);
-
-        clearTimeout(timeoutId);
 
         // Показываем успех
         btn.innerText = 'Отправлено! ✅'; 
@@ -346,21 +341,9 @@
           openTab('gossips', document.querySelector('.nav-btn'));
         }, 2000);
 
-        // 2. В ФОНЕ отправляем в Телеграм (без await)
-        const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
-        const TG_CHAT_ID = '6474419939'; 
-        const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textValue}`;
-        
-        fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' })
-        }).catch(e => console.log('Telegram error'));
-
       } catch (error) {
-        // Если база не ответила за 3 секунды
-        clearTimeout(timeoutId);
-        alert('Ошибка сети! Проверьте интернет и попробуйте снова.');
+        // Если база данных не работает
+        alert('Ошибка интернета! Проверьте подключение.');
         btn.innerText = 'Отправить'; 
         btn.disabled = false;
       }

@@ -306,64 +306,50 @@
       }
     }
 
-    // ОТПРАВКА (С ФОЛБЭКОМ, ЕСЛИ ТЕЛЕГРАМ НЕ ОТВЕЧАЕТ)
+    // ОТПРАВКА (СНАЧАЛА БАЗА, ПОТОМ В ФОНЕ ТЕЛЕГРАМ)
     window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
       const textInput = document.getElementById('questionText');
       const nick = document.getElementById('nickname').innerText;
+      const textValue = textInput.value;
       
-      btn.innerText = 'Отправка...'; btn.disabled = true;
+      btn.innerText = 'Сохранение...'; btn.disabled = true;
 
-      const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
-      const TG_CHAT_ID = '6474419939'; 
-      const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textInput.value}`;
-
-      let telegramSuccess = false;
-
-      // Пытаемся отправить в Телеграм (ждем максимум 5 секунд)
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 сек таймаут
-
-        const response = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' }),
-          signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-        if (response.ok) telegramSuccess = true;
-      } catch (error) {
-        console.log('Телеграм не ответил, сохраняем только в базу.');
-      }
-
-      // В ЛЮБОМ СЛУЧАЕ СОХРАНЯЕМ В БАЗУ (даже если Телеграм упал)
+      // 1. СНАЧАЛА СОХРАНЯЕМ В БАЗУ (это быстро и работает всегда)
       try {
         const newGossip = {
           author: nick,
           emoji: "🦊",
-          text: textInput.value,
+          text: textValue,
           likes: 0,
           witness: 0,
           status: "pending"
         };
         await push(gossipRef, newGossip);
 
+        // Показываем успех сразу же
         btn.innerText = 'Отправлено на проверку! ✅'; 
         btn.style.background = '#28a745';
         textInput.value = ''; 
         generateNick();
         setTimeout(() => { btn.innerText = 'Отправить сплетню'; btn.style.background = ''; btn.disabled = false; }, 3000);
 
-        if (!telegramSuccess) {
-          console.log("Телеграм не ответил, но сплетня в базе.");
-        }
+        // 2. В ФОНЕ ПЫТАЕМСЯ ОТПРАВИТЬ В ТЕЛЕГРАМ (пользователь этого не видит)
+        const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
+        const TG_CHAT_ID = '6474419939'; 
+        const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textValue}`;
+        
+        // Отправляем без await, чтобы не тормозить пользователя
+        fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' })
+        }).catch(e => console.log('Телеграм заблокирован, но сплетня в базе.'));
 
       } catch (error) {
-        // Эта ошибка вылезет только если сломался сам Firebase
-        alert('Ошибка сохранения на сайте. Проверьте интернет.');
+        // Если упала база (нет интернета вообще)
+        alert('Ошибка интернета! Проверьте подключение.');
         btn.innerText = 'Отправить сплетню'; 
         btn.disabled = false;
       }

@@ -116,7 +116,7 @@
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
         <div class="random-nick-box">Твой случайный ник: <strong id="nickname">Гость_0000</strong></div>
         <textarea id="questionText" placeholder="Напиши свою сплетню сюда..." required></textarea>
-        <button type="submit" class="submit-btn" id="sendBtn">Отправить сплетню</button>
+        <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
       </form>
     </div>
 
@@ -306,7 +306,7 @@
       }
     }
 
-    // ОТПРАВКА (СНАЧАЛА БАЗА, ПОТОМ В ФОНЕ ТЕЛЕГРАМ)
+    // БЕЗОПАСНАЯ ОТПРАВКА (ТОЛЬКО В БАЗУ И БОТА, БЕЗ ССЫЛОК НА ТВОЙ ПРОФИЛЬ)
     window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
@@ -314,10 +314,14 @@
       const nick = document.getElementById('nickname').innerText;
       const textValue = textInput.value;
       
-      btn.innerText = 'Сохранение...'; btn.disabled = true;
+      btn.innerText = 'Отправка...'; btn.disabled = true;
 
-      // 1. СНАЧАЛА СОХРАНЯЕМ В БАЗУ (в админку)
+      // Таймаут на 3 секунды. Если база не отвечает, мы просто прекращаем ждать.
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+
       try {
+        // 1. Отправляем в базу данных (для админки)
         const newGossip = {
           author: nick,
           emoji: "🦊",
@@ -328,34 +332,36 @@
         };
         await push(gossipRef, newGossip);
 
-        // Показываем успех сразу же (пользователь счастлив)
-        btn.innerText = 'Отправлено на проверку! ✅'; 
+        clearTimeout(timeoutId);
+
+        // Показываем успех
+        btn.innerText = 'Отправлено! ✅'; 
         btn.style.background = '#28a745';
         textInput.value = ''; 
         generateNick();
         setTimeout(() => { 
-          btn.innerText = 'Отправить сплетню'; 
+          btn.innerText = 'Отправить'; 
           btn.style.background = ''; 
           btn.disabled = false; 
-          openTab('gossips', document.querySelector('.nav-btn')); // Перекидываем на ленту
+          openTab('gossips', document.querySelector('.nav-btn'));
         }, 2000);
 
-        // 2. ТЕПЕРЬ В ФОНЕ ОТПРАВЛЯЕМ В ТЕЛЕГРАМ
+        // 2. В ФОНЕ отправляем в Телеграм (без await)
         const TG_TOKEN = '8880758052:AAG573adRoPPt1s0P_fa9-kzgRLMy8yogYI';
         const TG_CHAT_ID = '6474419939'; 
         const message = `🤫 *НОВАЯ СПЛЕТНЯ*\n\n👤 От: *${nick}*\n💬 Текст: ${textValue}`;
         
-        // Отправляем без await (не тормозим сайт)
         fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chat_id: TG_CHAT_ID, text: message, parse_mode: 'Markdown' })
-        }).catch(e => console.log('Telegram error, but saved to Firebase'));
+        }).catch(e => console.log('Telegram error'));
 
       } catch (error) {
-        // Если упала база (нет интернета вообще)
-        alert('Ошибка интернета! Проверьте подключение.');
-        btn.innerText = 'Отправить сплетню'; 
+        // Если база не ответила за 3 секунды
+        clearTimeout(timeoutId);
+        alert('Ошибка сети! Проверьте интернет и попробуйте снова.');
+        btn.innerText = 'Отправить'; 
         btn.disabled = false;
       }
     };

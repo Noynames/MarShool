@@ -132,79 +132,40 @@
   </main>
   <footer>© 2026 Сплетни Марьяновской школы</footer>
 
-  <script>
-    // === ТВОИ ДАННЫЕ GITHUB ===
-    const GITHUB_USER = 'Noyname';
-    const GITHUB_REPO = 'MarShool';
-    const GITHUB_TOKEN = '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';
-    const FILE_PATH = 'gossips.json';
-    const API_URL = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FILE_PATH}`;
-    
-    const HEADERS = {
-      'Authorization': `token ${GITHUB_TOKEN}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    };
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    // === ТВОИ КЛЮЧИ SUPABASE ===
+    const SUPABASE_URL = 'https://owcxvgvajlbrpirwvjhr.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv';
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let allGossips = [];
-    let currentSha = null;
     let adminClicks = 0;
     let currentAdminView = 'pending';
 
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    // === ЗАГРУЗКА ДАННЫХ ===
+    // Загрузка данных
     async function loadData() {
-      try {
-        const res = await fetch(API_URL, { headers: HEADERS });
-        if (!res.ok) throw new Error('Ошибка загрузки');
-        const data = await res.json();
-        
-        currentSha = data.sha;
-        // Декодируем Base64 (с поддержкой кириллицы)
-        const content = decodeURIComponent(escape(atob(data.content)));
-        allGossips = JSON.parse(content || "[]");
-        
-        renderFeeds();
-      } catch (err) {
-        console.error(err);
-        document.getElementById('mainFeed').innerHTML = `<div class="empty-feed">Ошибка загрузки ленты. Проверьте интернет.</div>`;
+      const { data, error } = await supabase
+        .from('gossips')
+        .select('*')
+        .order('id', { ascending: false }); // Новые сверху
+
+      if (error) {
+        console.error('Ошибка загрузки:', error);
+        document.getElementById('mainFeed').innerHTML = `<div class="empty-feed">Ошибка базы данных. Проверьте настройки.</div>`;
+        return;
       }
+
+      allGossips = data || [];
+      renderFeeds();
     }
 
-    // === СОХРАНЕНИЕ В GITHUB ===
-    async function saveData(newData) {
-      try {
-        // Кодируем в Base64 (с поддержкой кириллицы)
-        const contentEncoded = btoa(unescape(encodeURIComponent(JSON.stringify(newData, null, 2))));
-        
-        const body = {
-          message: 'Обновление сплетен',
-          content: contentEncoded,
-          sha: currentSha
-        };
-
-        const res = await fetch(API_URL, {
-          method: 'PUT',
-          headers: HEADERS,
-          body: JSON.stringify(body)
-        });
-
-        if (!res.ok) throw new Error('Ошибка сохранения');
-        
-        const resData = await res.json();
-        currentSha = resData.content.sha; // Обновляем SHA для следующего сохранения
-        allGossips = newData;
-        renderFeeds();
-        return true;
-      } catch (err) {
-        console.error(err);
-        return false;
-      }
-    }
-
-    // === ОТПРАВКА СПЛЕТНИ ===
+    // Отправка сплетни
     window.sendMessage = async function(event) {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
@@ -215,47 +176,48 @@
       btn.innerText = 'Отправка...'; 
       btn.disabled = true;
 
-      const newGossip = {
-        id: Date.now().toString(),
-        author: nick,
-        emoji: "🦊",
-        text: textValue,
-        likes: 0,
-        witness: 0,
-        status: "pending"
-      };
+      const { error } = await supabase
+        .from('gossips')
+        .insert([
+          { 
+            author: nick, 
+            emoji: '🦊', 
+            text: textValue, 
+            likes: 0, 
+            witness: 0, 
+            status: 'pending' 
+          }
+        ]);
 
-      const newData = [...allGossips, newGossip];
-      const success = await saveData(newData);
-
-      if (success) {
+      if (error) {
+        alert('Ошибка отправки: ' + error.message);
+        btn.innerText = 'Отправить'; 
+        btn.disabled = false;
+      } else {
         btn.innerText = 'Отправлено! ✅'; 
         btn.style.background = '#28a745';
         textInput.value = ''; 
         generateNick();
+        loadData(); // Обновляем ленту
         setTimeout(() => { 
           btn.innerText = 'Отправить'; 
           btn.style.background = ''; 
           btn.disabled = false; 
           openTab('gossips', document.querySelector('.nav-btn'));
         }, 2000);
-      } else {
-        alert('Ошибка интернета! Не удалось сохранить.');
-        btn.innerText = 'Отправить'; 
-        btn.disabled = false;
       }
     };
 
-    // === РЕАКЦИИ ===
+    // Реакции
     window.likeGossip = async function(id) {
       if (localStorage.getItem(`voted_${id}_like`)) return;
       
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
-        gossip.likes = (gossip.likes || 0) + 1;
+        const newLikes = (gossip.likes || 0) + 1;
+        await supabase.from('gossips').update({ likes: newLikes }).eq('id', id);
         localStorage.setItem(`voted_${id}_like`, 'true');
-        // Сохраняем в фоне (не блокируем интерфейс)
-        saveData(allGossips);
+        loadData();
       }
     }
 
@@ -264,27 +226,25 @@
       
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
-        gossip.witness = (gossip.witness || 0) + 1;
+        const newWitness = (gossip.witness || 0) + 1;
+        await supabase.from('gossips').update({ witness: newWitness }).eq('id', id);
         localStorage.setItem(`voted_${id}_witness`, 'true');
-        saveData(allGossips);
+        loadData();
       }
     }
 
-    // === АДМИНКА ===
+    // Админка
     window.publishGossip = async function(id) {
-      const gossip = allGossips.find(g => g.id === id);
-      if (gossip) {
-        gossip.status = 'published';
-        await saveData(allGossips);
-        alert('Сплетня опубликована!');
-      }
+      await supabase.from('gossips').update({ status: 'published' }).eq('id', id);
+      alert('Сплетня опубликована!');
+      loadData();
     }
 
     window.deleteGossip = async function(id) {
       if(confirm('Точно удалить эту сплетню?')) {
-        const newData = allGossips.filter(g => g.id !== id);
-        await saveData(newData);
+        await supabase.from('gossips').delete().eq('id', id);
         alert('Сплетня удалена!');
+        loadData();
       }
     }
 
@@ -316,14 +276,14 @@
       }
     }
 
-    // === ОТРИСОВКА ===
+    // Отрисовка
     function hasVoted(id, type) {
       return localStorage.getItem(`voted_${id}_${type}`) === 'true';
     }
 
     function renderFeeds() {
-      const published = allGossips.filter(g => g.status === 'published').reverse();
-      const pending = allGossips.filter(g => g.status === 'pending').reverse();
+      const published = allGossips.filter(g => g.status === 'published');
+      const pending = allGossips.filter(g => g.status === 'pending');
 
       const mainFeed = document.getElementById('mainFeed');
       const topFeed = document.getElementById('topFeed');

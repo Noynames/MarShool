@@ -14,128 +14,104 @@
       --bg-color: #1a1a1a; --dot-color: #2a2a2a; --card-bg: #242424;
       --text-main: #e0e0e0; --text-muted: #999999; --accent: #ff8a5c; --accent-light: #3d2a20; --border: #333333;
     }
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Nunito', sans-serif; background-color: var(--bg-color);
       background-image: radial-gradient(var(--dot-color) 2px, transparent 2px); background-size: 30px 30px;
       color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-      transition: background-color 0.3s, color 0.3s;
+      transition: background-color 1s ease, color 0.3s;
     }
     
-    .top-bar {
-      width: 100%; display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 20px; position: absolute; top: 0; left: 0;
-    }
-    .online-badge {
-      background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px;
-      padding: 6px 12px; font-weight: 800; font-size: 0.8rem; color: var(--text-muted);
-      display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
+    .top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: absolute; top: 0; left: 0; }
+    .online-badge { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-weight: 800; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
     .online-dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; box-shadow: 0 0 5px #28a745; }
-
-    .theme-toggle {
-      background: var(--card-bg); border: 2px solid var(--border);
-      border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; z-index: 100;
-    }
+    .theme-toggle { background: var(--card-bg); border: 2px solid var(--border); border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
     .site-header { text-align: center; padding: 70px 20px 20px; z-index: 2; width: 100%; cursor: pointer; user-select: none; }
     .site-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
     .site-header p { font-size: 1rem; color: var(--text-muted); font-weight: 600; }
     
-    .nav-tabs {
-      display: flex; gap: 10px; margin-bottom: 25px; background: var(--card-bg); padding: 8px;
-      border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center;
-      width: 90%; max-width: 480px; box-shadow: 0 6px 15px rgba(0,0,0,0.05);
-    }
-    .nav-btn {
-      background: transparent; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: 800;
-      padding: 12px 15px; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; flex: 1;
-    }
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 8px; border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center; width: 90%; max-width: 480px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); }
+    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; flex: 1; }
     .nav-btn.active { background: var(--accent-light); color: var(--text-main); }
-    
     #adminTabBtn { display: none; background: #ff4d4d; color: white; }
 
-    .card {
-      background: var(--card-bg); border-radius: 24px; padding: 25px 20px; max-width: 480px;
-      width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--border); margin-bottom: 40px;
-    }
+    .card { background: var(--card-bg); border-radius: 24px; padding: 25px 20px; max-width: 480px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--border); margin-bottom: 40px; }
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Скелетон-загрузка */
+    .skeleton-card { background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border); padding: 15px; margin-bottom: 20px; }
+    .skeleton-line { height: 15px; background: var(--border); border-radius: 5px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
+    .skeleton-line.short { width: 50%; }
+    .skeleton-img { height: 150px; background: var(--border); border-radius: 10px; margin-bottom: 15px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+
     .feed-container { display: flex; flex-direction: column; gap: 20px; }
     .gossip-card {
       background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border);
       text-align: left; overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    .gossip-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .gossip-card.top-gossip { border-color: gold; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+
     .gossip-image { width: 100%; max-height: 300px; object-fit: cover; border-bottom: 2px solid var(--border); }
     .gossip-content { padding: 15px; }
-    .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+    
+    .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
     
-    /* Кнопки */
-    .action-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
-    .action-btn {
-      background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px;
-      font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer;
-      display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease; font-family: inherit;
-    }
+    .spoiler { background: var(--text-main); color: transparent; padding: 0 4px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+    .spoiler.revealed { background: transparent; color: var(--text-main); }
+
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+    .action-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.2s ease; font-family: inherit; }
     .action-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
     .action-btn.liked { background: #d4edda; border-color: #28a745; color: #155724; cursor: not-allowed; }
     .action-btn.disliked { background: #f8d7da; border-color: #dc3545; color: #721c24; cursor: not-allowed; }
 
     .emoji-reactions { display: flex; gap: 8px; flex-wrap: wrap; }
-    .emoji-btn {
-      background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 10px;
-      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: transform 0.1s, border-color 0.2s;
-    }
+    .emoji-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 10px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: transform 0.1s; }
     .emoji-btn:hover:not(:disabled) { transform: scale(1.05); border-color: var(--accent); }
     .emoji-btn.reacted { background: var(--accent-light); border-color: var(--accent); cursor: not-allowed; }
     .emoji-count { font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
-    
+
     .question-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
-    .nick-container {
-      background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; 
-      border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .nick-container strong { color: var(--accent); font-size: 1rem; }
-    .edit-nick-btn {
-      background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 8px;
-      font-weight: 800; cursor: pointer; font-size: 0.75rem; transition: 0.2s;
-    }
+    .nick-container { background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600; display: flex; flex-direction: column; gap: 8px; }
+    .nick-row { display: flex; justify-content: space-between; align-items: center; }
+    .edit-nick-btn { background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.75rem; }
+    
     .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 1rem; resize: vertical; min-height: 100px; outline: none; }
     
     .file-upload-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
-    .file-label {
-      background: var(--card-bg); border: 2px dashed var(--border); padding: 10px; border-radius: 10px;
-      font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; text-align: center; flex: 1;
-    }
-    .file-label:hover { border-color: var(--accent); color: var(--accent); }
+    .file-label { background: var(--card-bg); border: 2px dashed var(--border); padding: 10px; border-radius: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; text-align: center; flex: 1; }
     #imageInput { display: none; }
 
     .submit-btn { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; }
     footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); font-weight: 600; padding-bottom: 20px; }
-    .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: 16px; border: 2px dashed var(--border); }
     
     .admin-nav { display: flex; gap: 10px; margin-bottom: 15px; }
     .admin-nav button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--card-bg); color: var(--text-main); font-weight: bold; cursor: pointer; border: 2px solid var(--border); }
     .admin-nav button.active { background: var(--accent); color: white; border-color: var(--accent); }
-    
     .admin-card { background: #fff3cd; border-color: #ffc107; }
     .admin-card.published-card { background: #d4edda; border-color: #28a745; }
     .admin-btn { background: #28a745; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; }
     .delete-btn { background: #dc3545; margin-top: 5px; }
+
+    .rating-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border); font-weight: 700; }
+    .badge { background: #e0f7fa; color: #006064; padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; }
+    .search-input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 10px; border: 2px solid var(--border); background: var(--bg-color); color: var(--text-main); outline: none; }
   </style>
 </head>
 <body>
   
   <div class="top-bar">
-    <div class="online-badge">
-      <div class="online-dot"></div>
-      <span id="onlineCount">...</span> онлайн
-    </div>
+    <div class="online-badge"><div class="online-dot"></div><span id="onlineCount">...</span> онлайн</div>
     <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
   </div>
   
@@ -146,36 +122,42 @@
 
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
-    <button class="nav-btn" onclick="openTab('top', this)">🏆 Топ</button>
+    <button class="nav-btn" onclick="openTab('rating', this)">👑 Топ-10</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
     <button class="nav-btn" id="adminTabBtn" onclick="openTab('admin', this)">🛠️ Админка</button>
   </div>
 
   <main class="card">
     <div id="gossips" class="tab-content active">
-      <div class="feed-container" id="mainFeed"><div class="empty-feed">Загрузка...</div></div>
-    </div>
-    <div id="top" class="tab-content">
-      <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-weight: 600;">Самые горячие сплетни 🔥</div>
-      <div class="feed-container" id="topFeed"></div>
-    </div>
-    <div id="suggest" class="tab-content">
-      <div style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
-        Хочешь поделиться новостью? Пиши! Твоё сообщение появится на сайте после проверки.
+      <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по сплетням..." oninput="filterGossips()">
+      <div class="feed-container" id="mainFeed">
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
+        <div class="skeleton-card"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>
       </div>
+    </div>
+    
+    <div id="rating" class="tab-content">
+      <h3 style="margin-bottom: 15px; text-align: center;">Топ-10 анонимов</h3>
+      <div id="topAuthors"></div>
+      <h3 style="margin-top: 25px; margin-bottom: 15px; text-align: center;">Доска почета классов</h3>
+      <div id="classBoard"></div>
+    </div>
+
+    <div id="suggest" class="tab-content">
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
         <div class="nick-container">
-          <div>Твой ник: <strong id="nickname">Гость_0000</strong></div>
-          <button type="button" class="edit-nick-btn" onclick="editNick()">Изменить</button>
+          <div class="nick-row">Твой ник: <strong id="nickname">Гость_0000</strong> <button type="button" class="edit-nick-btn" onclick="editNick()">Изменить</button></div>
+          <input type="text" id="classInput" class="search-input" style="margin:0; padding: 8px;" placeholder="Твой класс (например, 10А)">
         </div>
-        <textarea id="questionText" placeholder="Напиши свою сплетню сюда..." required></textarea>
+        <textarea id="questionText" placeholder="Напиши свою сплетню (используй ||, чтобы скрыть текст под спойлер)..." required oninput="saveDraft()"></textarea>
         <div class="file-upload-wrapper">
-          <label for="imageInput" class="file-label" id="fileLabel">📷 Прикрепить фото (необязательно)</label>
+          <label for="imageInput" class="file-label" id="fileLabel">📷 Прикрепить фото</label>
           <input type="file" id="imageInput" accept="image/*" onchange="previewImage(this)">
         </div>
         <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
       </form>
     </div>
+
     <div id="admin" class="tab-content">
       <div class="admin-nav">
         <button id="btnAdminPending" class="active" onclick="switchAdminTab('pending')">На проверку</button>
@@ -188,43 +170,44 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-    const SUPABASE_URL = 'https://owcxvgvajlbrpirwvjhr.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    const supabase = createClient('https://owcxvgvajlbrpirwvjhr.supabase.co', 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv');
 
     let allGossips = [];
-    let adminClicks = 0;
     let currentAdminView = 'pending';
     let selectedFile = null;
-    let currentUserId = localStorage.getItem('siteUserId') || generateUserId();
+    let adminClicks = 0;
+    let currentUserId = localStorage.getItem('siteUserId') || Math.random().toString(36).substring(2, 15);
 
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    function generateUserId() {
-      const id = Math.random().toString(36).substring(2, 15);
-      localStorage.setItem('siteUserId', id);
-      return id;
+    function autoTheme() {
+      const hour = new Date().getHours();
+      if (hour >= 20 || hour < 7) {
+        document.body.classList.add('dark-theme');
+        document.getElementById('themeBtn').innerText = '☀️';
+      }
+    }
+
+    window.toggleTheme = () => {
+      document.body.classList.toggle('dark-theme');
+      document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
     }
 
     function generateNick() {
       const savedNick = localStorage.getItem('userNickname');
       if (savedNick) {
         document.getElementById('nickname').innerText = savedNick;
+        document.getElementById('classInput').value = localStorage.getItem('userClass') || '';
       } else {
-        const randomNum = Math.floor(100 + Math.random() * 900);
-        const emojis = ["🐱", "🦊", "👽", "👻", "🤖", "🐼", "🐸"];
-        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
-        const newNick = `${emoji} Гость_${randomNum}`;
+        const newNick = `🦊 Гость_${Math.floor(100 + Math.random() * 900)}`;
         document.getElementById('nickname').innerText = newNick;
         localStorage.setItem('userNickname', newNick);
       }
     }
 
-    window.editNick = function() {
-      const currentNick = document.getElementById('nickname').innerText;
-      const newNick = prompt('Введи свой ник (макс. 15 символов):', currentNick);
+    window.editNick = () => {
+      const newNick = prompt('Введи свой ник (макс. 15 символов):', document.getElementById('nickname').innerText);
       if (newNick && newNick.trim() !== '') {
         let cleanNick = newNick.trim().substring(0, 15);
         document.getElementById('nickname').innerText = cleanNick;
@@ -232,76 +215,91 @@
       }
     }
 
-    window.previewImage = function(input) {
+    window.saveDraft = () => {
+      localStorage.setItem('draftText', document.getElementById('questionText').value);
+    }
+    
+    const draft = localStorage.getItem('draftText');
+    if (draft) document.getElementById('questionText').value = draft;
+
+    window.previewImage = (input) => {
       if (input.files && input.files[0]) {
         selectedFile = input.files[0];
         document.getElementById('fileLabel').innerText = '✅ Фото выбрано';
-        document.getElementById('fileLabel').style.borderColor = '#28a745';
-        document.getElementById('fileLabel').style.color = '#28a745';
       }
     }
 
     async function updateOnlineStatus() {
-      const { error } = await supabase.from('online_users').upsert({ id: currentUserId, last_seen: new Date().toISOString() });
-      const twoMinutesAgo = new Date(Date.now() - 2 * 60000).toISOString();
-      const { count } = await supabase.from('online_users').select('*', { count: 'exact', head: true }).gt('last_seen', twoMinutesAgo);
+      await supabase.from('online_users').upsert({ id: currentUserId, last_seen: new Date().toISOString() });
+      const { count } = await supabase.from('online_users').select('*', { count: 'exact', head: true }).gt('last_seen', new Date(Date.now() - 2 * 60000).toISOString());
       if (count !== null) document.getElementById('onlineCount').innerText = count;
     }
     setInterval(updateOnlineStatus, 30000);
 
     async function loadData() {
-      const { data, error } = await supabase.from('gossips').select('*').order('id', { ascending: false });
-      if (error) return;
+      const { data, error } = await supabase.from('gossips').select('*').order('is_top', { ascending: false }).order('id', { ascending: false });
+      if (error) {
+        console.error('Ошибка загрузки:', error);
+        document.getElementById('mainFeed').innerHTML = `<div class="empty-feed">Ошибка базы данных. Проверьте настройки.</div>`;
+        return;
+      }
       allGossips = data || [];
       renderFeeds();
     }
 
-    window.sendMessage = async function(event) {
+    window.sendMessage = async (event) => {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
-      const textInput = document.getElementById('questionText');
+      const textValue = document.getElementById('questionText').value;
       const nick = document.getElementById('nickname').innerText;
-      const textValue = textInput.value;
+      const userClass = document.getElementById('classInput').value;
 
-      btn.innerText = 'Загрузка фото...'; btn.disabled = true;
+      localStorage.setItem('userClass', userClass);
+      btn.innerText = 'Отправка...'; btn.disabled = true;
       let imageUrl = null;
 
       if (selectedFile) {
         const fileExt = selectedFile.name.split('.').pop();
         const fileName = `${Date.now()}.${fileExt}`;
-        const filePath = `public/${fileName}`;
-        const { error: uploadError } = await supabase.storage.from('images').upload(filePath, selectedFile);
+        const { error: uploadError } = await supabase.storage.from('images').upload(`public/${fileName}`, selectedFile);
         if (!uploadError) {
-          const { data: urlData } = supabase.storage.from('images').getPublicUrl(filePath);
+          const { data: urlData } = supabase.storage.from('images').getPublicUrl(`public/${fileName}`);
           imageUrl = urlData.publicUrl;
         }
       }
 
-      btn.innerText = 'Отправка...';
       const { error } = await supabase.from('gossips').insert([{ 
-        author: nick, emoji: '🦊', text: textValue, likes: 0, dislikes: 0, witness: 0, status: 'pending', image_url: imageUrl 
+        author: nick, emoji: '🦊', text: textValue, author_class: userClass, likes: 0, dislikes: 0, status: 'pending', image_url: imageUrl 
       }]);
 
       if (error) {
-        alert('Ошибка отправки: ' + error.message);
+        alert('Ошибка: ' + error.message);
         btn.innerText = 'Отправить'; btn.disabled = false;
       } else {
+        localStorage.removeItem('draftText');
+        document.getElementById('questionText').value = '';
         btn.innerText = 'Отправлено! ✅'; btn.style.background = '#28a745';
-        textInput.value = ''; selectedFile = null;
-        document.getElementById('fileLabel').innerText = '📷 Прикрепить фото (необязательно)';
-        document.getElementById('fileLabel').style.borderColor = '';
-        document.getElementById('fileLabel').style.color = '';
-        document.getElementById('imageInput').value = '';
         loadData();
         setTimeout(() => { 
           btn.innerText = 'Отправить'; btn.style.background = ''; btn.disabled = false; 
           openTab('gossips', document.querySelector('.nav-btn'));
-        }, 2000);
+        }, 1500);
       }
     };
 
-    // === ЛАЙКИ И ДИЗЛАЙКИ ===
-    window.likeGossip = async function(id) {
+    window.reactEmoji = async (id, type) => {
+      if (localStorage.getItem(`voted_${id}_${type}`)) return;
+      const gossip = allGossips.find(g => g.id === id);
+      if (gossip) {
+        let reactions = gossip.reactions || {};
+        reactions[type] = (reactions[type] || 0) + 1;
+        await supabase.from('gossips').update({ reactions }).eq('id', id);
+        localStorage.setItem(`voted_${id}_${type}`, 'true');
+        loadData();
+      }
+    }
+
+    window.likeGossip = async (id) => {
       if (localStorage.getItem(`voted_${id}_like`) || localStorage.getItem(`voted_${id}_dislike`)) return;
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
@@ -311,7 +309,7 @@
       }
     }
 
-    window.dislikeGossip = async function(id) {
+    window.dislikeGossip = async (id) => {
       if (localStorage.getItem(`voted_${id}_like`) || localStorage.getItem(`voted_${id}_dislike`)) return;
       const gossip = allGossips.find(g => g.id === id);
       if (gossip) {
@@ -321,33 +319,19 @@
       }
     }
 
-    // === РЕАКЦИИ ЭМОДЗИ ===
-    window.reactEmoji = async function(id, emojiType) {
-      const voteKey = `voted_${id}_${emojiType}`;
-      if (localStorage.getItem(voteKey)) return;
-      const gossip = allGossips.find(g => g.id === id);
-      if (gossip) {
-        let reactions = gossip.reactions || {};
-        reactions[emojiType] = (reactions[emojiType] || 0) + 1;
-        await supabase.from('gossips').update({ reactions: reactions }).eq('id', id);
-        localStorage.setItem(voteKey, 'true');
-        loadData();
-      }
-    }
-
-    window.publishGossip = async function(id) {
+    window.publishGossip = async (id) => {
       await supabase.from('gossips').update({ status: 'published' }).eq('id', id);
       loadData();
     }
 
-    window.deleteGossip = async function(id) {
-      if(confirm('Точно удалить?')) {
+    window.deleteGossip = async (id) => {
+      if(confirm('Удалить?')) {
         await supabase.from('gossips').delete().eq('id', id);
         loadData();
       }
     }
 
-    window.switchAdminTab = function(tab) {
+    window.switchAdminTab = (tab) => {
       currentAdminView = tab;
       document.getElementById('btnAdminPending').classList.remove('active');
       document.getElementById('btnAdminPublished').classList.remove('active');
@@ -355,7 +339,7 @@
       renderFeeds();
     }
 
-    window.openAdmin = function() {
+    window.openAdmin = () => {
       adminClicks++;
       if (adminClicks >= 5) {
         const pass = prompt('Пароль:');
@@ -365,25 +349,46 @@
             document.getElementById('adminTabBtn').style.display = 'block';
             alert('Админка разблокирована!');
             openTab('admin', document.getElementById('adminTabBtn'));
-          } else if (answer !== null) alert('Неверный год!');
+          } else alert('Неверный год!');
         } else if (pass !== null) alert('Неверный пароль!');
         adminClicks = 0;
       }
+    }
+
+    window.filterGossips = () => {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('#mainFeed .gossip-card');
+      cards.forEach(card => {
+        const text = card.querySelector('.gossip-text').innerText.toLowerCase();
+        card.style.display = text.includes(query) ? 'flex' : 'none';
+      });
     }
 
     function renderFeeds() {
       const published = allGossips.filter(g => g.status === 'published');
       const pending = allGossips.filter(g => g.status === 'pending');
       const mainFeed = document.getElementById('mainFeed');
-      const topFeed = document.getElementById('topFeed');
       const adminFeed = document.getElementById('adminFeed');
 
       if (published.length === 0) mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
       else mainFeed.innerHTML = published.map(g => renderCard(g)).join('');
 
-      const sorted = [...published].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 3);
-      if (sorted.length === 0) topFeed.innerHTML = `<div class="empty-feed">Пусто</div>`;
-      else topFeed.innerHTML = sorted.map(g => renderCard(g, true)).join('');
+      const authors = {};
+      const classes = {};
+      published.forEach(g => {
+        authors[g.author] = (authors[g.author] || 0) + 1;
+        if (g.author_class) classes[g.author_class] = (classes[g.author_class] || 0) + 1;
+      });
+
+      const topAuthors = Object.entries(authors).sort((a, b) => b[1] - a[1]).slice(0, 10);
+      document.getElementById('topAuthors').innerHTML = topAuthors.map((a, i) => `
+        <div class="rating-item"><span>${i+1}. ${a[0]}</span> <span>${a[1]} сплетен</span></div>
+      `).join('') || '<div class="empty-feed">Пусто</div>';
+
+      const topClasses = Object.entries(classes).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      document.getElementById('classBoard').innerHTML = topClasses.map((c, i) => `
+        <div class="rating-item"><span>${i+1}. Класс ${c[0]}</span> <span>${c[1]} сплетен</span></div>
+      `).join('') || '<div class="empty-feed">Пусто</div>';
 
       if (currentAdminView === 'pending') {
         if (pending.length === 0) adminFeed.innerHTML = `<div class="empty-feed">Нет новых</div>`;
@@ -391,7 +396,7 @@
             <div class="gossip-card admin-card">
               ${g.image_url ? `<img src="${g.image_url}" class="gossip-image">` : ''}
               <div class="gossip-content">
-                <div class="gossip-author">${g.emoji || '🦊'} ${g.author}</div>
+                <div class="gossip-author">${g.author} ${g.author_class ? `(${g.author_class})` : ''}</div>
                 <div class="gossip-text">${g.text}</div>
                 <button class="admin-btn" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
                 <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ Удалить</button>
@@ -404,7 +409,7 @@
             <div class="gossip-card published-card">
               ${g.image_url ? `<img src="${g.image_url}" class="gossip-image">` : ''}
               <div class="gossip-content">
-                <div class="gossip-author">${g.emoji || '🦊'} ${g.author}</div>
+                <div class="gossip-author">${g.author}</div>
                 <div class="gossip-text">${g.text}</div>
                 <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ Удалить</button>
               </div>
@@ -417,38 +422,34 @@
       const liked = localStorage.getItem(`voted_${gossip.id}_like`) === 'true';
       const disliked = localStorage.getItem(`voted_${gossip.id}_dislike`) === 'true';
       const reactions = gossip.reactions || {};
-      
-      // Оставили только Смех и Шок
-      const emojiOptions = [
-        { type: 'laugh', icon: '😂' },
-        { type: 'scared', icon: '😱' }
-      ];
+      const isNight = new Date().getHours() >= 0 && new Date().getHours() < 6;
 
-      let emojiHTML = '';
-      emojiOptions.forEach(opt => {
-        const count = reactions[opt.type] || 0;
-        const reacted = localStorage.getItem(`voted_${gossip.id}_${opt.type}`) === 'true';
-        emojiHTML += `
-          <button class="emoji-btn ${reacted ? 'reacted' : ''}" onclick="reactEmoji('${gossip.id}', '${opt.type}')" ${reacted ? 'disabled' : ''}>
-            ${opt.icon} ${count > 0 ? `<span class="emoji-count">${count}</span>` : ''}
-          </button>
-        `;
+      let displayText = gossip.text.replace(/\|\|(.*?)\|\|/g, (match, p1) => {
+        return `<span class="spoiler" onclick="this.classList.toggle('revealed')">${p1}</span>`;
       });
 
+      const emojiOptions = [{ type: 'laugh', icon: '😂' }, { type: 'scared', icon: '😱' }];
+      let emojiHTML = emojiOptions.map(opt => {
+        const count = reactions[opt.type] || 0;
+        const reacted = localStorage.getItem(`voted_${gossip.id}_${opt.type}`) === 'true';
+        return `<button class="emoji-btn ${reacted ? 'reacted' : ''}" onclick="reactEmoji('${gossip.id}', '${opt.type}')" ${reacted ? 'disabled' : ''}>${opt.icon} ${count > 0 ? `<span class="emoji-count">${count}</span>` : ''}</button>`;
+      }).join('');
+
       return `
-        <div class="gossip-card">
-          ${gossip.image_url ? `<img src="${gossip.image_url}" class="gossip-image">` : ''}
+        <div class="gossip-card ${isTop ? 'top-gossip' : ''}">
+          ${gossip.image_url ? `<img src="${gossip.image_url}" class="gossip-image" loading="lazy">` : ''}
           <div class="gossip-content">
-            <div class="gossip-author">${gossip.emoji || '🦊'} ${gossip.author} ${isTop ? '<span style="background:gold; color:#000; font-size:0.7rem; padding:2px 6px; border-radius:10px; margin-left:5px;">🏆 ТОП</span>' : ''}</div>
-            <div class="gossip-text">${gossip.text}</div>
+            <div class="gossip-author">
+              ${gossip.emoji || '🦊'} ${gossip.author} 
+              ${gossip.author_class ? `<span class="badge">${gossip.author_class}</span>` : ''}
+              ${isNight ? '<span class="badge">🦉 Полуночник</span>' : ''}
+              ${isTop ? '<span class="badge" style="background:gold; color:black;">🏆 Лучшая</span>' : ''}
+            </div>
+            <div class="gossip-text">${displayText}</div>
             
             <div class="action-row">
-              <button class="action-btn ${liked ? 'liked' : ''}" onclick="likeGossip('${gossip.id}')" ${liked || disliked ? 'disabled' : ''}>
-                👍 <span>${gossip.likes || 0}</span>
-              </button>
-              <button class="action-btn ${disliked ? 'disliked' : ''}" onclick="dislikeGossip('${gossip.id}')" ${liked || disliked ? 'disabled' : ''}>
-                👎 <span>${gossip.dislikes || 0}</span>
-              </button>
+              <button class="action-btn ${liked ? 'liked' : ''}" onclick="likeGossip('${gossip.id}')" ${liked || disliked ? 'disabled' : ''}>👍 <span>${gossip.likes || 0}</span></button>
+              <button class="action-btn ${disliked ? 'disliked' : ''}" onclick="dislikeGossip('${gossip.id}')" ${liked || disliked ? 'disabled' : ''}>👎 <span>${gossip.dislikes || 0}</span></button>
             </div>
 
             <div class="emoji-reactions">
@@ -459,7 +460,7 @@
       `;
     }
 
-    window.openTab = function(tabName, btn) {
+    window.openTab = (tabName, btn) => {
       let i, tabcontent = document.getElementsByClassName("tab-content");
       for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
       let tablinks = document.getElementsByClassName("nav-btn");
@@ -467,15 +468,10 @@
       document.getElementById(tabName).classList.add("active");
       btn.classList.add("active");
     }
-    
-    window.toggleTheme = function() {
-      document.body.classList.toggle('dark-theme');
-      const btn = document.getElementById('themeBtn');
-      btn.innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
-    }
 
     window.onload = () => {
       generateNick();
+      autoTheme();
       loadData();
       updateOnlineStatus();
     };

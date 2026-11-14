@@ -4,100 +4,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Сплетни Марьяновской школы</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Comfortaa:wght@400;700&family=Marck+Script&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #fcf9f2; --dot-color: #f0e6d2; --card-bg: #ffffff;
-      --text-main: #4a3f35; --text-muted: #9c7e68; --accent: #ff9e7a; --accent-light: #ffd8b4; --border: #f0e6d2;
+      --bg-color: #fcf9f2; --dot-color: #f0e6d2; --card-bg: rgba(255, 255, 255, 0.85);
+      --text-main: #4a3f35; --text-muted: #9c7e68; --accent: #ff9e7a; --accent-light: #ffd8b4; --border: rgba(240, 230, 210, 0.5);
+      --font-main: 'Nunito', sans-serif;
+      --shadow: 0 8px 32px 0 rgba(180, 160, 140, 0.15);
     }
     body.dark-theme {
-      --bg-color: #1a1a1a; --dot-color: #2a2a2a; --card-bg: #242424;
-      --text-main: #e0e0e0; --text-muted: #999999; --accent: #ff8a5c; --accent-light: #3d2a20; --border: #333333;
+      --bg-color: #1a1a1a; --dot-color: #2a2a2a; --card-bg: rgba(36, 36, 36, 0.85);
+      --text-main: #e0e0e0; --text-muted: #999999; --accent: #ff8a5c; --accent-light: #3d2a20; --border: rgba(51, 51, 51, 0.5);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     }
-    
-    /* Праздничные фоны */
-    body.theme-newyear {
-      --bg-color: #0b1a2a; --dot-color: #1a304a; --card-bg: #152a40;
-      --text-main: #e0f0ff; --text-muted: #8bb8e0; --accent: #4facfe; --accent-light: #2a5a8a; --border: #2a5a8a;
-      background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 2px, transparent 2px), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 2px, transparent 2px), linear-gradient(to bottom, #0b1a2a, #1a3a5a);
-    }
-    body.theme-halloween {
-      --bg-color: #1a0b0b; --dot-color: #3a1a1a; --card-bg: #2a1010;
-      --text-main: #ffcfcf; --text-muted: #e08b8b; --accent: #ff5722; --accent-light: #4a1a1a; --border: #4a1a1a;
-      background-image: linear-gradient(to bottom, #1a0b0b, #3a1515);
-    }
-    body.theme-spring {
-      --bg-color: #fff0f5; --dot-color: #ffd1dc; --card-bg: #ffffff;
-      --text-main: #6a1b4d; --text-muted: #d17a9b; --accent: #ff69b4; --accent-light: #ffe4e1; --border: #ffb6c1;
-    }
-    
+    body.font-comfort { --font-main: 'Comfortaa', cursive; }
+    body.font-script { --font-main: 'Marck Script', cursive; }
+
+    /* Фоны */
+    body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 2px); background-size: 50px 50px; }
+    body.bg-matrix { --bg-color: #000; background-image: linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px); background-size: 100% 20px; }
+    body.bg-rain { --bg-color: #2c3e50; background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 11px); }
+    body.bg-snow { --bg-color: #e0f7fa; background-image: radial-gradient(circle, #fff 2px, transparent 2px); background-size: 40px 40px; }
+    body.bg-leaves { --bg-color: #ff8a65; background-image: radial-gradient(circle, #fff 3px, transparent 3px); background-size: 60px 60px; }
+    body.bg-dust { --bg-color: #3e2723; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
+    body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
+    body.bg-space { --bg-color: #000; background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Nunito', sans-serif; background-color: var(--bg-color);
-      background-image: radial-gradient(var(--dot-color) 2px, transparent 2px); background-size: 30px 30px;
+      font-family: var(--font-main); background-color: var(--bg-color);
       color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-      transition: background-color 0.5s ease, color 0.3s;
+      transition: background-color 0.5s ease, color 0.3s, font-family 0.3s;
     }
     
+    .card, .gossip-card { 
+      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+    }
+
+    button, .action-btn, .nav-btn { transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s; }
+    button:active, .action-btn:active { transform: scale(0.92); }
+    .gossip-card:hover { transform: scale(1.02); }
+
     .top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: absolute; top: 0; left: 0; z-index: 10; }
-    .online-badge { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-weight: 800; font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .online-badge { background: var(--card-bg); backdrop-filter: blur(5px); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-weight: 800; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; }
     .online-dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; box-shadow: 0 0 5px #28a745; }
+    
     .controls { display: flex; gap: 10px; }
     .icon-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .author-avatar { border: 2px solid var(--accent); box-shadow: 0 0 8px var(--accent); }
 
     .site-header { text-align: center; padding: 70px 20px 20px; z-index: 2; width: 100%; cursor: pointer; user-select: none; }
     .site-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
     .site-header p { font-size: 1rem; color: var(--text-muted); font-weight: 600; }
     
-    .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 8px; border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center; width: 90%; max-width: 480px; box-shadow: 0 6px 15px rgba(0,0,0,0.05); }
-    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; flex: 1; }
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); backdrop-filter: blur(10px); padding: 8px; border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center; width: 90%; max-width: 480px; }
+    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; flex: 1; }
     .nav-btn.active { background: var(--accent-light); color: var(--text-main); }
     #adminTabBtn { display: none; background: #ff4d4d; color: white; }
 
-    .card { background: var(--card-bg); border-radius: 24px; padding: 25px 20px; max-width: 480px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--border); margin-bottom: 40px; }
+    .card { border-radius: 24px; padding: 25px 20px; max-width: 480px; width: 90%; margin-bottom: 40px; }
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
-    .gossip-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); text-align: left; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 20px; }
+    .gossip-card { border-radius: 16px; text-align: left; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 20px; }
     .gossip-image { width: 100%; max-height: 300px; object-fit: cover; border-bottom: 2px solid var(--border); }
     .gossip-content { padding: 15px; }
     .gossip-author-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .author-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 2px solid var(--border); }
-    .author-frame-gold { border: 3px solid gold; box-shadow: 0 0 10px gold; }
+    .author-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
     
     .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
-    .action-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-family: inherit; }
-    .action-btn.liked { background: #d4edda; border-color: #28a745; color: #155724; cursor: not-allowed; }
+    .action-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+    .action-btn.liked { background: #d4edda; border-color: #28a745; color: #155724; }
     
-    .poll-box { background: var(--bg-color); padding: 12px; border-radius: 12px; margin-bottom: 15px; border: 2px dashed var(--border); }
-    .poll-title { font-weight: 800; margin-bottom: 10px; font-size: 1rem; }
-    .poll-option { display: flex; justify-content: space-between; background: var(--card-bg); border: 2px solid var(--border); padding: 10px; margin-bottom: 8px; border-radius: 10px; cursor: pointer; font-weight: 700; }
-    .poll-option.voted { background: var(--accent-light); border-color: var(--accent); cursor: not-allowed; }
     .comments-section { margin-top: 15px; border-top: 2px dashed var(--border); padding-top: 10px; }
-    .comment { background: var(--bg-color); padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; border: 1px solid var(--border); }
+    .comment { background: rgba(0,0,0,0.05); padding: 8px 12px; border-radius: 12px; margin-bottom: 8px; font-size: 0.9rem; border: 1px solid var(--border); }
     .comment-author { font-weight: 800; color: var(--accent); font-size: 0.8rem; }
     .comment-input-row { display: flex; gap: 5px; margin-top: 10px; }
-    .comment-input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); outline: none; }
+    .comment-input { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); outline: none; }
     .comment-btn { background: var(--accent); border: none; color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-    .shop-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-color); padding: 15px; border-radius: 12px; border: 2px solid var(--border); margin-bottom: 10px; }
+    .shop-item { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 12px; border: 2px solid var(--border); margin-bottom: 10px; }
     .buy-btn { background: var(--accent); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-    
-    /* Стили для Инфо */
-    .info-text { font-size: 0.95rem; line-height: 1.6; color: var(--text-main); background: var(--bg-color); padding: 20px; border-radius: 16px; border: 2px dashed var(--border); }
-    .info-text p { margin-bottom: 12px; }
-    .info-text strong { color: var(--accent); }
-
-    /* Топ недели */
-    .top-week-card { border: 3px solid gold; background: linear-gradient(145deg, var(--card-bg), var(--bg-color)); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
-
     .question-form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
     .nick-container { background: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 0.9rem; border: 2px dashed var(--accent); margin-bottom: 5px; color: var(--text-main); font-weight: 600; display: flex; flex-direction: column; gap: 8px; }
-    .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 1rem; min-height: 100px; outline: none; }
+    .question-form textarea { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); font-family: inherit; font-size: 1rem; min-height: 100px; outline: none; }
     .file-upload-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
     .file-label { background: var(--card-bg); border: 2px dashed var(--border); padding: 10px; border-radius: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; text-align: center; flex: 1; }
     #imageInput { display: none; }
@@ -112,16 +107,31 @@
     .admin-btn { background: #28a745; color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; }
     .delete-btn { background: #dc3545; }
     .restore-btn { background: #17a2b8; }
-    .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--bg-color); border-radius: 16px; border: 2px dashed var(--border); }
-    .badge { background: #e0f7fa; color: #006064; padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; }
+    .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); background: var(--card-bg); border-radius: 16px; border: 2px dashed var(--border); }
+    .badge { background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; }
+    .particle { position: fixed; pointer-events: none; font-size: 1.5rem; z-index: 9999; }
+
+    /* Стили для мем-генератора */
+    .meme-container { position: relative; width: 100%; margin-bottom: 15px; display: none; overflow: hidden; border-radius: 10px; }
+    .meme-container img { width: 100%; display: block; }
+    
+    .draggable-text {
+      position: absolute; color: white; font-family: 'Impact', sans-serif; text-transform: uppercase;
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+      font-size: 2rem; line-height: 1.1; cursor: grab; user-select: none; padding: 5px; text-align: center;
+    }
+    .draggable-text:active { cursor: grabbing; }
+
+    .meme-feed-image { width: 100%; max-height: 400px; object-fit: contain; background: #000; border-bottom: 2px solid var(--border); }
   </style>
 </head>
 <body>
-  
+
   <div class="top-bar">
     <div class="online-badge"><div class="online-dot"></div><span id="onlineCount">...</span> онлайн</div>
     <div class="controls">
-      <button class="icon-btn" onclick="cycleBackground()" id="bgBtn" title="Сменить фон">🎨</button>
+      <button class="icon-btn" onclick="cycleBackground()" id="bgBtn" title="Сменить фон">🌌</button>
+      <button class="icon-btn" onclick="cycleFont()" id="fontBtn" title="Сменить шрифт">🅰️</button>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </div>
   </div>
@@ -133,40 +143,51 @@
 
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
-    <button class="nav-btn" onclick="openTab('topweek', this)">🏆 Топ недели</button>
+    <button class="nav-btn" onclick="openTab('topweek', this)">🏆 Топ</button>
+    <button class="nav-btn" onclick="openTab('memes', this)">🖼️ Мемы</button>
     <button class="nav-btn" onclick="openTab('shop', this)">🛒 Магазин</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
-    <button class="nav-btn" onclick="openTab('info', this)">ℹ️ Инфо</button>
     <button class="nav-btn" id="adminTabBtn" onclick="openTab('admin', this)">🛠️ Админка</button>
   </div>
 
   <main class="card">
-    <!-- Лента -->
     <div id="gossips" class="tab-content active">
       <div class="feed-container" id="mainFeed"></div>
+      <div id="loadMoreTrigger" style="height: 20px;"></div>
     </div>
-
-    <!-- Топ недели -->
+    
     <div id="topweek" class="tab-content">
       <h3 style="margin-bottom: 15px; text-align: center;">🔥 Самое горячее за неделю</h3>
       <div class="feed-container" id="topWeekFeed"></div>
     </div>
-    
-    <!-- Магазин -->
-    <div id="shop" class="tab-content">
-      <h3 style="margin-bottom: 15px; text-align: center;">Магазин наград</h3>
-      <p style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem;">Твои лайки: <strong id="userLikesCount" style="color: var(--accent);">0</strong></p>
-      <div class="shop-item">
-        <div>🥇 Золотая рамка<br><small style="color: var(--text-muted); font-size: 0.75rem;">Стоимость: 10 лайков</small></div>
-        <button class="buy-btn" onclick="buyFrame()">Купить</button>
-      </div>
-      <div class="shop-item">
-        <div>🏷️ Смена ника<br><small style="color: var(--text-muted); font-size: 0.75rem;">Стоимость: 5 лайков</small></div>
-        <button class="buy-btn" onclick="buyNickChange()">Купить</button>
+
+    <!-- ГЕНЕРАТОР МЕМОВ -->
+    <div id="memes" class="tab-content">
+      <h3 style="margin-bottom: 15px; text-align: center;">Генератор мемов 😂</h3>
+      
+      <div class="question-form">
+        <input type="file" id="memeImageInput" accept="image/*" onchange="loadMemeImage(this)" style="margin-bottom: 10px;">
+        
+        <input type="text" id="memeTextInput" placeholder="Введи текст для мема..." style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
+        
+        <button class="submit-btn" onclick="addTextToMeme()" style="background: #4facfe; margin-bottom: 10px;">Добавить текст</button>
+        
+        <div class="meme-container" id="memeContainer">
+          <img id="memeImage" src="" alt="Мем" crossorigin="anonymous">
+          <!-- Сюда будут добавляться перетаскиваемые тексты -->
+        </div>
+        
+        <button class="submit-btn" onclick="publishMeme()" id="publishMemeBtn" style="display: none; background: #28a745;">Опубликовать мем 🚀</button>
       </div>
     </div>
 
-    <!-- Предложить -->
+    <div id="shop" class="tab-content">
+      <h3 style="margin-bottom: 15px; text-align: center;">Магазин наград</h3>
+      <p style="text-align: center; margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem;">Твои лайки: <strong id="userLikesCount" style="color: var(--accent);">0</strong></p>
+      <div class="shop-item"><div>🥇 Золотая рамка<br><small style="color: var(--text-muted); font-size: 0.75rem;">Стоимость: 10 лайков</small></div><button class="buy-btn" onclick="buyFrame()">Купить</button></div>
+      <div class="shop-item"><div>🏷️ Смена ника<br><small style="color: var(--text-muted); font-size: 0.75rem;">Стоимость: 5 лайков</small></div><button class="buy-btn" onclick="buyNickChange()">Купить</button></div>
+    </div>
+
     <div id="suggest" class="tab-content">
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
         <div class="nick-container">
@@ -178,30 +199,10 @@
           <label for="imageInput" class="file-label" id="fileLabel">📷 Прикрепить фото</label>
           <input type="file" id="imageInput" accept="image/*" onchange="previewImage(this)">
         </div>
-        <div style="margin-bottom: 10px;">
-          <label style="font-weight: 800; font-size: 0.9rem; margin-bottom: 5px; display: block;">Прикрепить опрос (необязательно)</label>
-          <input type="text" id="pollQuestion" class="comment-input" style="width: 100%; margin-bottom: 5px;" placeholder="Вопрос (например: Кто круче?)">
-          <div style="display: flex; gap: 5px;">
-            <input type="text" id="pollA" class="comment-input" style="flex: 1;" placeholder="Вариант А">
-            <input type="text" id="pollB" class="comment-input" style="flex: 1;" placeholder="Вариант Б">
-          </div>
-        </div>
         <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
       </form>
     </div>
 
-    <!-- ИНФО (Новая вкладка) -->
-    <div id="info" class="tab-content">
-      <div class="info-text">
-        <p><strong>Добро пожаловать на «Сплетни Марьяновской школы»!</strong> 👋</p>
-        <p>Данный сайт создан по примеру проекта в Телеграмме <strong>«Брутальный Донецк»</strong>.</p>
-        <p>У нас, как и там, некоторые школьники занимаются полной дичью и делают вещи, которые не сильно могут понравиться окружающим. 😅</p>
-        <p>Но вообще, этот сайт был создан <strong>по приколу</strong>, чтобы вы могли анонимно почитать новости, пообщаться и повеселиться. Не воспринимайте всё слишком серьезно!</p>
-        <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">Сделано с ❤️ для Марьяновской школы.</p>
-      </div>
-    </div>
-
-    <!-- Админка -->
     <div id="admin" class="tab-content">
       <div class="admin-nav">
         <button id="btnAdminPending" class="active" onclick="switchAdminTab('pending')">На проверку</button>
@@ -225,20 +226,35 @@
     let userLikes = parseInt(localStorage.getItem('userLikes') || '0');
     let userFrame = localStorage.getItem('userFrame') || '';
 
+    let currentPage = 0;
+    const pageSize = 5;
+    let isLoading = false;
+
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    const backgrounds = ['default', 'newyear', 'halloween', 'spring'];
+    // ФОНЫ
+    const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-rain', 'bg-snow', 'bg-leaves', 'bg-dust', 'bg-paper', 'bg-space'];
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
 
     window.cycleBackground = () => {
       currentBgIndex = (parseInt(currentBgIndex) + 1) % backgrounds.length;
       localStorage.setItem('bgIndex', currentBgIndex);
-      document.body.classList.remove('theme-newyear', 'theme-halloween', 'theme-spring');
+      document.body.className = document.body.className.replace(/bg-\S+/g, '').trim();
       const bg = backgrounds[currentBgIndex];
-      if (bg !== 'default') document.body.classList.add(`theme-${bg}`);
-      const icons = ['🎨', '🎄', '🎃', '🌸'];
+      if (bg !== 'default') document.body.classList.add(bg);
+      const icons = ['🎨', '🌌', '🟩', '🌧️', '❄️', '🍂', '✨', '📄', '🌑'];
       document.getElementById('bgBtn').innerText = icons[currentBgIndex];
+    }
+
+    const fonts = ['default', 'font-comfort', 'font-script'];
+    let currentFontIndex = localStorage.getItem('fontIndex') || 0;
+    window.cycleFont = () => {
+      currentFontIndex = (parseInt(currentFontIndex) + 1) % fonts.length;
+      localStorage.setItem('fontIndex', currentFontIndex);
+      document.body.classList.remove('font-comfort', 'font-script');
+      const font = fonts[currentFontIndex];
+      if (font !== 'default') document.body.classList.add(font);
     }
 
     window.toggleTheme = () => {
@@ -255,17 +271,185 @@
       allPolls = pData || [];
       allComments = cData || [];
       
-      renderFeeds();
+      currentPage = 0;
+      document.getElementById('mainFeed').innerHTML = '';
+      loadMoreGossips();
+      
       updateShopUI();
+    }
+
+    function loadMoreGossips() {
+      if (isLoading) return;
+      isLoading = true;
+
+      const published = allGossips.filter(g => g.status === 'published' && !g.is_deleted);
+      const nextGossips = published.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+
+      const mainFeed = document.getElementById('mainFeed');
+      
+      if (nextGossips.length === 0 && currentPage === 0) {
+        mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
+      } else {
+        nextGossips.forEach(g => {
+          mainFeed.insertAdjacentHTML('beforeend', renderCard(g));
+        });
+      }
+
+      currentPage++;
+      isLoading = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      const trigger = document.getElementById('loadMoreTrigger');
+      if (!trigger) return;
+      const rect = trigger.getBoundingClientRect();
+      if (rect.top <= window.innerHeight + 300) {
+        loadMoreGossips();
+      }
+    });
+
+    // --- МЕМ-ГЕНЕРАТОР С ПЕРЕТАСКИВАНИЕМ ---
+    window.loadMemeImage = (input) => {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('memeImage').src = e.target.result;
+          document.getElementById('memeContainer').style.display = 'block';
+          document.getElementById('publishMemeBtn').style.display = 'block';
+          
+          // Очищаем старые тексты
+          document.querySelectorAll('.draggable-text').forEach(el => el.remove());
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    window.addTextToMeme = () => {
+      const text = document.getElementById('memeTextInput').value;
+      if (!text) return;
+
+      const container = document.getElementById('memeContainer');
+      const newText = document.createElement('div');
+      newText.className = 'draggable-text';
+      newText.innerText = text;
+      newText.style.left = '50%';
+      newText.style.top = '50%';
+      newText.style.transform = 'translate(-50%, -50%)'; // Центрируем
+      
+      // Логика перетаскивания
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      newText.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - newText.getBoundingClientRect().left;
+        offsetY = e.clientY - newText.getBoundingClientRect().top;
+        newText.style.transform = 'none'; // Убираем центрирование при перетаскивании
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let x = e.clientX - offsetX - container.getBoundingClientRect().left;
+        let y = e.clientY - offsetY - container.getBoundingClientRect().top;
+        
+        // Ограничиваем в пределах картинки
+        x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
+        y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
+
+        newText.style.left = `${x}px`;
+        newText.style.top = `${y}px`;
+      });
+
+      document.addEventListener('mouseup', () => isDragging = false);
+
+      // Для телефонов (тач)
+      newText.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - newText.getBoundingClientRect().left;
+        offsetY = touch.clientY - newText.getBoundingClientRect().top;
+        newText.style.transform = 'none';
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        let x = touch.clientX - offsetX - container.getBoundingClientRect().left;
+        let y = touch.clientY - offsetY - container.getBoundingClientRect().top;
+
+        x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
+        y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
+
+        newText.style.left = `${x}px`;
+        newText.style.top = `${y}px`;
+      });
+
+      document.addEventListener('touchend', () => isDragging = false);
+
+      container.appendChild(newText);
+      document.getElementById('memeTextInput').value = '';
+    }
+
+    window.publishMeme = async () => {
+      const container = document.getElementById('memeContainer');
+      const btn = document.getElementById('publishMemeBtn');
+      
+      if (!container.querySelector('img')) {
+        alert('Загрузите картинку!');
+        return;
+      }
+
+      btn.innerText = 'Создание мема...'; btn.disabled = true;
+
+      // Используем html2canvas для отрисовки
+      html2canvas(container, { useCORS: true, allowTaint: true }).then(async (canvas) => {
+        const base64Image = canvas.toDataURL('image/png');
+        const nick = document.getElementById('nickname').innerText;
+
+        // Отправляем в базу как base64 (в реальном проекте лучше загружать в Storage)
+        // Для простоты загрузим в Supabase Storage
+        const blob = await (await fetch(base64Image)).blob();
+        const fileName = `meme_${Date.now()}.png`;
+        
+        const { error } = await supabase.storage.from('images').upload(`public/${fileName}`, blob);
+        
+        if (error) {
+          alert('Ошибка загрузки мема. Попробуйте еще раз.');
+          btn.innerText = 'Опубликовать мем 🚀'; btn.disabled = false;
+          return;
+        }
+
+        const { data: urlData } = supabase.storage.from('images').getPublicUrl(`public/${fileName}`);
+
+        // Отправляем в БД с флагом, что это мем
+        await supabase.from('gossips').insert([{ 
+          author: nick, 
+          text: "Мем от " + nick, 
+          status: 'pending', 
+          likes: 0,
+          meme_url: urlData.publicUrl
+        }]);
+
+        btn.innerText = 'Мем на проверке! ✅';
+        btn.style.background = '#17a2b8';
+        
+        setTimeout(() => {
+          btn.innerText = 'Опубликовать мем 🚀';
+          btn.style.background = '#28a745';
+          btn.disabled = false;
+          openTab('gossips', document.querySelector('.nav-btn'));
+        }, 2000);
+      });
     }
 
     window.createParticles = (e) => {
       const colors = ['❤️', '🔥', '✨', '⭐'];
       for (let i = 0; i < 5; i++) {
         const p = document.createElement('div');
+        p.className = 'particle';
         p.innerText = colors[Math.floor(Math.random() * colors.length)];
         p.style.left = e.clientX + 'px'; p.style.top = e.clientY + 'px';
-        p.style.position = 'fixed'; p.style.pointerEvents = 'none'; p.style.zIndex = '9999'; p.style.fontSize = '1.5rem';
         document.body.appendChild(p);
         const angle = Math.random() * Math.PI * 2; const velocity = 50 + Math.random() * 50;
         p.animate([{ transform: 'translate(0, 0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity - 50}px) scale(0)`, opacity: 0 }], { duration: 800, easing: 'ease-out' });
@@ -280,13 +464,11 @@
         updateShopUI(); alert('Золотая рамка куплена!');
       } else alert('Недостаточно лайков!');
     }
-
     window.buyNickChange = () => {
       if (userLikes >= 5) {
         userLikes -= 5; localStorage.setItem('userLikes', userLikes); updateShopUI(); window.editNick();
       } else alert('Недостаточно лайков!');
     }
-
     function updateShopUI() { document.getElementById('userLikesCount').innerText = userLikes; }
 
     window.sendMessage = async (event) => {
@@ -295,13 +477,9 @@
       const textValue = document.getElementById('questionText').value;
       const nick = document.getElementById('nickname').innerText;
       const userClass = document.getElementById('classInput').value;
-      const pollQ = document.getElementById('pollQuestion').value;
-      const pollA = document.getElementById('pollA').value;
-      const pollB = document.getElementById('pollB').value;
 
       btn.innerText = 'Отправка...'; btn.disabled = true;
       await supabase.from('gossips').insert([{ author: nick, text: textValue, author_class: userClass, author_frame: userFrame, status: 'pending', likes: 0 }]);
-      if (pollQ && pollA && pollB) await supabase.from('polls').insert([{ question: pollQ, option_a: pollA, option_b: pollB }]);
       
       document.getElementById('questionText').value = '';
       btn.innerText = 'Отправлено! ✅'; btn.style.background = '#28a745';
@@ -328,16 +506,6 @@
       input.value = ''; loadData();
     }
 
-    window.votePoll = async (pollId, option) => {
-      if (localStorage.getItem(`voted_poll_${pollId}`)) return;
-      const poll = allPolls.find(p => p.id === pollId);
-      if (poll) {
-        if (option === 'A') await supabase.from('polls').update({ votes_a: (poll.votes_a || 0) + 1 }).eq('id', pollId);
-        else await supabase.from('polls').update({ votes_b: (poll.votes_b || 0) + 1 }).eq('id', pollId);
-        localStorage.setItem(`voted_poll_${pollId}`, 'true'); loadData();
-      }
-    }
-
     window.deleteGossip = async (id) => { await supabase.from('gossips').update({ is_deleted: true }).eq('id', id); loadData(); }
     window.restoreGossip = async (id) => { await supabase.from('gossips').update({ is_deleted: false }).eq('id', id); loadData(); }
     window.publishGossip = async (id) => { await supabase.from('gossips').update({ status: 'published' }).eq('id', id); loadData(); }
@@ -348,7 +516,7 @@
       document.getElementById('btnAdminPublished').classList.remove('active');
       document.getElementById('btnAdminDeleted').classList.remove('active');
       document.getElementById('btnAdmin' + (tab === 'pending' ? 'Pending' : tab === 'published' ? 'Published' : 'Deleted')).classList.add('active');
-      renderFeeds();
+      renderAdminFeed();
     }
 
     window.openAdmin = () => {
@@ -366,30 +534,6 @@
       }
     }
 
-    function renderFeeds() {
-      const published = allGossips.filter(g => g.status === 'published' && !g.is_deleted);
-      
-      // Обычная лента
-      const mainFeed = document.getElementById('mainFeed');
-      if (published.length === 0) mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
-      else mainFeed.innerHTML = published.map(g => renderCard(g)).join('');
-
-      // ТОП НЕДЕЛИ (Фильтруем по дате)
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      
-      const topWeekGossips = published
-        .filter(g => new Date(g.created_at || Date.now()) >= oneWeekAgo)
-        .sort((a, b) => (b.likes || 0) - (a.likes || 0))
-        .slice(0, 3); // Берем только топ-3 за неделю
-
-      const topWeekFeed = document.getElementById('topWeekFeed');
-      if (topWeekGossips.length === 0) topWeekFeed.innerHTML = `<div class="empty-feed">За эту неделю еще нет сплетен с лайками.</div>`;
-      else topWeekFeed.innerHTML = topWeekGossips.map((g, index) => renderCard(g, true, index + 1)).join('');
-
-      renderAdminFeed();
-    }
-
     function renderAdminFeed() {
       const pending = allGossips.filter(g => g.status === 'pending' && !g.is_deleted);
       const published = allGossips.filter(g => g.status === 'published' && !g.is_deleted);
@@ -399,75 +543,53 @@
       if (currentAdminView === 'pending') {
         adminFeed.innerHTML = pending.length === 0 ? `<div class="empty-feed">Нет новых</div>` : pending.map(g => `
           <div class="gossip-card admin-card"><div class="gossip-content">
-            <div class="gossip-author">${g.author}</div><div class="gossip-text">${g.text}</div>
+            <div class="gossip-author">${g.author}</div>
+            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
             <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ В корзину</button>
           </div></div>`).join('');
       } else if (currentAdminView === 'published') {
         adminFeed.innerHTML = published.length === 0 ? `<div class="empty-feed">Пусто</div>` : published.map(g => `
           <div class="gossip-card published-card"><div class="gossip-content">
-            <div class="gossip-author">${g.author}</div><div class="gossip-text">${g.text}</div>
+            <div class="gossip-author">${g.author}</div>
+            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ В корзину</button>
           </div></div>`).join('');
       } else {
         adminFeed.innerHTML = deleted.length === 0 ? `<div class="empty-feed">Корзина пуста</div>` : deleted.map(g => `
           <div class="gossip-card deleted-card"><div class="gossip-content">
-            <div class="gossip-author">${g.author}</div><div class="gossip-text">${g.text}</div>
+            <div class="gossip-author">${g.author}</div>
+            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn restore-btn" onclick="restoreGossip('${g.id}')">♻️ Восстановить</button>
           </div></div>`).join('');
       }
     }
 
-    function renderCard(gossip, isTopWeek = false, topPlace = 0) {
+    function renderCard(gossip) {
       const liked = localStorage.getItem(`voted_${gossip.id}_like`) === 'true';
       const comments = allComments.filter(c => c.gossip_id === gossip.id);
       const commentsHTML = comments.map(c => `<div class="comment"><div class="comment-author">${c.author}</div>${c.text}</div>`).join('');
-      
-      let pollHTML = '';
-      if (allPolls.length > 0 && allGossips.indexOf(gossip) === 0 && !isTopWeek) {
-        const poll = allPolls[0];
-        const voted = localStorage.getItem(`voted_poll_${poll.id}`);
-        const total = (poll.votes_a || 0) + (poll.votes_b || 0);
-        const percentA = total === 0 ? 0 : Math.round(((poll.votes_a || 0) / total) * 100);
-        const percentB = total === 0 ? 0 : Math.round(((poll.votes_b || 0) / total) * 100);
-        pollHTML = `
-          <div class="poll-box">
-            <div class="poll-title">📊 ${poll.question}</div>
-            <div class="poll-option ${voted ? 'voted' : ''}" onclick="votePoll('${poll.id}', 'A')"><span>${poll.option_a}</span> <span>${voted ? percentA + '%' : ''}</span></div>
-            <div class="poll-option ${voted ? 'voted' : ''}" onclick="votePoll('${poll.id}', 'B')"><span>${poll.option_b}</span> <span>${voted ? percentB + '%' : ''}</span></div>
-          </div>`;
-      }
-
-      // Если это топ недели, добавляем золотую рамку и медаль
-      let cardClass = isTopWeek ? 'gossip-card top-week-card' : 'gossip-card';
-      let medalHTML = '';
-      if (isTopWeek) {
-        const medals = ['🥇', '🥈', '🥉'];
-        medalHTML = `<div style="font-size: 1.5rem; position: absolute; right: 15px; top: 15px;">${medals[topPlace-1]}</div>`;
-      }
 
       return `
-        <div class="${cardClass}" style="position: relative;">
-          ${medalHTML}
+        <div class="gossip-card">
+          ${gossip.meme_url ? `<img src="${gossip.meme_url}" class="meme-feed-image">` : ''}
           ${gossip.image_url ? `<img src="${gossip.image_url}" class="gossip-image">` : ''}
           <div class="gossip-content">
             <div class="gossip-author-row">
               <div class="author-avatar ${gossip.author_frame || ''}">${gossip.emoji || '🦊'}</div>
               <div class="gossip-author">${gossip.author} <span class="badge">${gossip.author_class || 'Школа'}</span></div>
             </div>
-            <div class="gossip-text">${gossip.text}</div>
-            ${pollHTML}
+            ${!gossip.meme_url ? `<div class="gossip-text">${gossip.text}</div>` : ''}
             <div class="action-row">
               <button class="action-btn ${liked ? 'liked' : ''}" onclick="likeGossip(event, '${gossip.id}')" ${liked ? 'disabled' : ''}>👍 <span>${gossip.likes || 0}</span></button>
             </div>
-            ${!isTopWeek ? `
             <div class="comments-section">
               ${commentsHTML}
               <div class="comment-input-row">
                 <input type="text" class="comment-input" id="commentInput_${gossip.id}" placeholder="Написать комментарий...">
                 <button class="comment-btn" onclick="addComment('${gossip.id}')">➤</button>
               </div>
-            </div>` : ''}
+            </div>
           </div>
         </div>`;
     }
@@ -483,12 +605,21 @@
 
     window.onload = () => {
       document.getElementById('nickname').innerText = localStorage.getItem('userNickname') || '🦊 Гость_0000';
-      const bg = backgrounds[currentBgIndex];
-      if (bg !== 'default') document.body.classList.add(`theme-${bg}`);
-      const icons = ['🎨', '🎄', '🎃', '🌸'];
-      document.getElementById('bgBtn').innerText = icons[currentBgIndex];
       
+      const bg = backgrounds[currentBgIndex];
+      if (bg !== 'default') document.body.classList.add(bg);
+      const icons = ['🎨', '🌌', '🟩', '🌧️', '❄️', '🍂', '✨', '📄', '🌑'];
+      document.getElementById('bgBtn').innerText = icons[currentBgIndex];
+
+      const font = fonts[currentFontIndex];
+      if (font !== 'default') document.body.classList.add(font);
+
       loadData();
+      
+      // Подключаем библиотеку для создания картинок из HTML
+      const script = document.createElement('script');
+      script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+      document.head.appendChild(script);
     };
   </script>
 </body>

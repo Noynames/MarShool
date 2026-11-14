@@ -20,7 +20,6 @@
     body.font-comfort { --font-main: 'Comfortaa', cursive; }
     body.font-script { --font-main: 'Marck Script', cursive; }
     
-    /* ФОНЫ */
     body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
     body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px; }
     body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
@@ -64,8 +63,6 @@
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
 
-    /* Мессенджер */
-    .search-user-input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); margin-bottom: 15px; outline: none; }
     .chat-container { display: flex; flex-direction: column; height: 400px; background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
@@ -74,7 +71,6 @@
     .chat-input-row { display: flex; padding: 10px; background: var(--card-bg); border-top: 1px solid var(--border); gap: 10px; }
     .chat-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none; }
 
-    /* Профиль */
     .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .profile-cover { width: 100%; height: 120px; background: var(--accent-light); border-radius: 16px; margin-bottom: -40px; background-size: cover; background-position: center; }
     .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--card-bg); border: 4px solid var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; z-index: 2; }
@@ -88,9 +84,14 @@
     footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); padding-bottom: 20px; }
     
     .admin-chat-item { background: var(--bg-color); border: 1px solid var(--border); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.9rem; }
-    .admin-nav { display: flex; gap: 10px; margin-bottom: 15px; }
+    .admin-nav { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
     .admin-nav button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--card-bg); color: var(--text-main); font-weight: bold; cursor: pointer; border: 2px solid var(--border); font-size: 0.8rem; }
     .admin-nav button.active { background: var(--accent); color: white; }
+    
+    .user-admin-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-color); padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+    .user-admin-item span { font-weight: 700; color: var(--accent); }
+    .admin-input { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 0.8rem; width: 100px; margin-right: 5px; }
+    .admin-save-btn { background: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
   </style>
 </head>
 <body>
@@ -125,7 +126,7 @@
 
     <div id="messenger" class="tab-content">
       <h3 style="margin-bottom: 15px;">Поиск людей 🔍</h3>
-      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()">
+      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()" style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); margin-bottom: 15px;">
       <div id="searchResults"></div>
     </div>
 
@@ -180,6 +181,7 @@
       <div class="admin-nav">
         <button id="btnAdminPending" class="active" onclick="switchAdminTab('pending')">На проверку</button>
         <button id="btnAdminChats" onclick="switchAdminTab('chats')">Переписки</button>
+        <button id="btnAdminUsers" onclick="switchAdminTab('users')">Пользователи</button>
       </div>
       <div class="feed-container" id="adminFeed"></div>
     </div>
@@ -273,21 +275,44 @@
       }
     }
 
+    // ОБНОВЛЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ПРОФИЛЯ (ЗАЩИТА ОТ ПОДДЕЛОК)
     window.saveProfile = async () => {
-      let uname = document.getElementById('newUsernameInput').value.trim().replace('@', '');
+      let uname = document.getElementById('newUsernameInput').value.trim().replace('@', '').toLowerCase();
       const bio = document.getElementById('newBioInput').value.trim();
       
-      const regex = /^[a-zA-Z0-9_]{1,10}$/;
-      if (!regex.test(uname)) { alert('Только англ. буквы, цифры и _ (до 10 символов)!'); return; }
+      // Строгая проверка: только a-z, 0-9 и _. Длина до 10.
+      const regex = /^[a-z0-9_]{1,10}$/;
+      if (!regex.test(uname)) { 
+        alert('Юзернейм должен содержать только английские буквы (без заглавных), цифры и _ (до 10 символов)!'); 
+        return; 
+      }
 
-      const { error } = await supabase.from('profiles').upsert({ username: uname, bio: bio, cover_url: localStorage.getItem('profileCover') }, { onConflict: 'username' });
+      // Проверяем, не занят ли ник кем-то другим (без учета регистра)
+      const { data: existingUser, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .ilike('username', uname)
+        .neq('username', localStorage.getItem('myUsername')); // Исключаем себя
+
+      if (existingUser && existingUser.length > 0) {
+        alert('Этот ник уже занят кем-то другим (или слишком похож на существующий)!');
+        return;
+      }
+
+      const { error } = await supabase.from('profiles').upsert({ 
+        username: uname, 
+        bio: bio, 
+        cover_url: localStorage.getItem('profileCover') 
+      }, { onConflict: 'username' });
 
       if (!error) {
         localStorage.setItem('myUsername', uname);
         localStorage.setItem('myBio', bio);
         loadProfile();
         alert('Профиль сохранен!');
-      } else { alert('Этот ник уже занят!'); }
+      } else { 
+        alert('Ошибка при сохранении. Попробуйте другой ник.'); 
+      }
     }
 
     window.uploadCover = async (input) => {
@@ -400,15 +425,31 @@
       currentAdminView = tab;
       document.getElementById('btnAdminPending').classList.remove('active');
       document.getElementById('btnAdminChats').classList.remove('active');
-      document.getElementById(tab === 'pending' ? 'btnAdminPending' : 'btnAdminChats').classList.add('active');
+      document.getElementById('btnAdminUsers').classList.remove('active');
+      document.getElementById(tab === 'pending' ? 'btnAdminPending' : tab === 'chats' ? 'btnAdminChats' : 'btnAdminUsers').classList.add('active');
       loadAdminData();
     }
 
     async function loadAdminData() {
       const adminFeed = document.getElementById('adminFeed');
+      
       if (currentAdminView === 'chats') {
         const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
         adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Переписок нет</div>` : data.map(msg => `<div class="admin-chat-item"><strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br><span style="color:var(--text-muted);">${msg.text}</span></div>`).join('');
+      
+      } else if (currentAdminView === 'users') {
+        const { data: profiles } = await supabase.from('profiles').select('*').order('username');
+        
+        adminFeed.innerHTML = (!profiles || profiles.length === 0) ? `<div class="empty-feed">Нет пользователей</div>` : profiles.map(p => `
+          <div class="user-admin-item">
+            <span>@${p.username}</span>
+            <div>
+              <input type="text" class="admin-input" id="input_user_${p.id}" value="${p.username}" maxlength="10">
+              <button class="admin-save-btn" onclick="changeUserNickname('${p.id}')">Сохр.</button>
+            </div>
+          </div>
+        `).join('');
+      
       } else {
         const { data } = await supabase.from('gossips').select('*').eq('status', 'pending');
         adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Нет новых сплетен</div>` : data.map(g => `
@@ -418,6 +459,32 @@
             <button class="submit-btn" style="margin-top:5px; background:#28a745; padding:8px;" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
           </div>
         `).join('');
+      }
+    }
+
+    // Функция смены ника из админки (с проверкой)
+    window.changeUserNickname = async (userId) => {
+      const newName = document.getElementById(`input_user_${userId}`).value.trim().toLowerCase();
+      
+      if (!/^[a-z0-9_]{1,10}$/.test(newName)) {
+        alert('Только англ. буквы (без заглавных), цифры и _ (до 10 символов)!');
+        return;
+      }
+
+      // Проверка, не занят ли ник кем-то другим
+      const { data: existingUser } = await supabase.from('profiles').select('id').ilike('username', newName).neq('id', userId);
+      if (existingUser && existingUser.length > 0) {
+        alert('Этот ник уже занят!');
+        return;
+      }
+
+      const { error } = await supabase.from('profiles').update({ username: newName }).eq('id', userId);
+      
+      if (!error) {
+        alert('Ник изменен!');
+        loadAdminData();
+      } else {
+        alert('Ошибка при смене ника.');
       }
     }
 
@@ -452,7 +519,7 @@
       document.getElementById('newBioInput').value = localStorage.getItem('myBio') || '';
       
       loadGossips();
-      subscribeToChanges(); // Включаем прослушку
+      subscribeToChanges();
     };
   </script>
 </body>

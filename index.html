@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Сплетни Марьяновской школы</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Comfortaa:wght@400;700&family=Marck+Script&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-color: #fcf9f2; --dot-color: #f0e6d2; --card-bg: rgba(255, 255, 255, 0.85);
@@ -17,14 +17,14 @@
       --text-main: #e0e0e0; --text-muted: #888888; --accent: #ff8a5c; --accent-light: #3d2a20; --border: rgba(60, 60, 60, 0.5);
       --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
     }
+    body.font-comfort { --font-main: 'Comfortaa', cursive; }
+    body.font-script { --font-main: 'Marck Script', cursive; }
     
     /* ФОНЫ */
     body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
     body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px), linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px, 30px 30px; }
     body.bg-rain { --bg-color: #1a1a2e; background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.08) 10px, rgba(255,255,255,0.08) 11px); }
-    body.bg-snow { --bg-color: #e3f2fd; background-image: radial-gradient(circle, #fff 3px, transparent 4px), radial-gradient(circle, #fff 2px, transparent 3px); background-size: 60px 60px, 40px 40px; background-position: 0 0, 30px 30px; }
     body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
-    body.bg-space { --bg-color: #000; background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -32,7 +32,7 @@
     body {
       font-family: var(--font-main); background-color: var(--bg-color);
       color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-      transition: background-color 0.5s ease, color 0.3s;
+      transition: background-color 0.5s ease, color 0.3s, font-family 0.3s;
     }
     
     .card, .gossip-card { 
@@ -42,12 +42,10 @@
 
     .top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: absolute; top: 0; left: 0; z-index: 10; }
     
-    /* Кнопка профиля слева вместо онлайна */
     .profile-btn {
       width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--accent);
       display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer;
-      box-shadow: 0 0 10px var(--accent);
-      transition: transform 0.2s;
+      box-shadow: 0 0 10px var(--accent); transition: transform 0.2s;
     }
     .profile-btn:hover { transform: scale(1.05); }
 
@@ -58,7 +56,7 @@
     .site-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
     
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 8px; border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center; width: 90%; max-width: 480px; }
-    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; flex: 1; }
+    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; flex: 1; position: relative; }
     .nav-btn.active { background: var(--accent-light); color: var(--text-main); }
     #adminTabBtn { display: none; background: #ff4d4d; color: white; }
 
@@ -73,10 +71,6 @@
     .author-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 2px solid var(--accent); }
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
-    
-    .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
-    .action-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
-    .action-btn.liked { background: #d4edda; border-color: #28a745; color: #155724; }
 
     /* Мессенджер */
     .search-user-input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); margin-bottom: 15px; outline: none; }
@@ -95,27 +89,27 @@
     .profile-info { text-align: center; margin-top: 10px; }
     .profile-username { font-size: 1.2rem; font-weight: 800; color: var(--text-main); }
     .profile-bio { font-size: 0.9rem; color: var(--text-muted); }
-    
-    .achievements-list { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px; }
-    .achievement-badge { background: gold; color: #000; padding: 4px 8px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
-
-    /* Админка переписок */
-    .admin-chat-item { background: var(--bg-color); border: 1px solid var(--border); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.9rem; }
 
     .submit-btn { background: var(--accent); color: #fff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
     .question-form { display: flex; flex-direction: column; gap: 12px; }
     .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); padding-bottom: 20px; }
+    
+    /* Админка */
+    .admin-chat-item { background: var(--bg-color); border: 1px solid var(--border); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.9rem; }
+    .admin-nav { display: flex; gap: 10px; margin-bottom: 15px; }
+    .admin-nav button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--card-bg); color: var(--text-main); font-weight: bold; cursor: pointer; border: 2px solid var(--border); font-size: 0.8rem; }
+    .admin-nav button.active { background: var(--accent); color: white; }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <!-- Аватарка вместо онлайна -->
-    <div class="profile-btn" id="myAvatarBtn" onclick="openTab('profile', document.querySelectorAll('.nav-btn')[2])">🦊</div>
+    <div class="profile-btn" id="myAvatarBtn" onclick="openTab('profile', document.querySelectorAll('.nav-btn')[3])">🦊</div>
     
     <div class="controls">
       <button class="icon-btn" onclick="cycleBackground()" id="bgBtn" title="Сменить фон">🌌</button>
+      <button class="icon-btn" onclick="cycleFont()" id="fontBtn" title="Сменить шрифт">🅰️</button>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
     </div>
   </div>
@@ -128,6 +122,7 @@
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
     <button class="nav-btn" onclick="openTab('messenger', this)">💬 Мессенджер</button>
+    <button class="nav-btn" id="chatsTabBtn" onclick="openTab('chatsList', this)">📥 Чаты <span id="unreadBadge" style="display:none; background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.6rem; position:absolute; top:2px; right:2px;">1</span></button>
     <button class="nav-btn" onclick="openTab('profile', this)">👤 Профиль</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
     <button class="nav-btn" id="adminTabBtn" onclick="openTab('admin', this)">🛠️ Админка</button>
@@ -138,20 +133,36 @@
       <div class="feed-container" id="mainFeed"></div>
     </div>
 
-    <!-- МЕССЕНДЖЕР -->
+    <!-- МЕССЕНДЖЕР (Поиск людей) -->
     <div id="messenger" class="tab-content">
-      <h3 style="margin-bottom: 15px;">Мессенджер 💬</h3>
-      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Найти друга по юзернейму (например, @sanya)" oninput="searchUsers()">
+      <h3 style="margin-bottom: 15px;">Поиск людей 🔍</h3>
+      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()">
       <div id="searchResults"></div>
+    </div>
 
-      <div class="chat-container" id="chatContainer" style="display:none;">
+    <!-- СПИСОК ЧАТОВ (Новая вкладка) -->
+    <div id="chatsList" class="tab-content">
+      <h3 style="margin-bottom: 15px;">Твои чаты 💬</h3>
+      <div id="myChatsList">
+        <div class="empty-feed">Загрузка...</div>
+      </div>
+    </div>
+
+    <!-- ОКНО ЧАТА (Открывается поверх) -->
+    <div id="chatWindow" class="tab-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <button onclick="openTab('chatsList', document.getElementById('chatsTabBtn'))" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">⬅️</button>
+        <h3 style="margin:0;">@<span id="chatTargetName"></span></h3>
+        <div style="width: 24px;"></div>
+      </div>
+      
+      <div class="chat-container">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-row">
           <input type="text" class="chat-input" id="chatInput" placeholder="Написать сообщение...">
           <button class="comment-btn" onclick="sendMessageToUser()">➤</button>
         </div>
       </div>
-      <p style="text-align: center; font-size: 0.8rem; margin-top: 10px; color: var(--text-muted);">Кому пишем: <strong id="chatTargetName">Никто</strong></p>
     </div>
 
     <!-- ПРОФИЛЬ -->
@@ -162,13 +173,12 @@
         <div class="profile-info">
           <div class="profile-username" id="profileUsername">@гость</div>
           <div class="profile-bio" id="profileBio">Тут будет твое био</div>
-          <div class="achievements-list" id="profileAchievements"></div>
         </div>
       </div>
       
       <div class="question-form">
-        <label>Сменить юзернейм</label>
-        <input type="text" id="newUsernameInput" placeholder="@username" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+        <label>Сменить юзернейм (только англ., до 10 символов)</label>
+        <input type="text" id="newUsernameInput" placeholder="username" maxlength="10" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
         
         <label>Сменить био</label>
         <input type="text" id="newBioInput" placeholder="О себе" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
@@ -202,14 +212,14 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
     const supabase = createClient('https://owcxvgvajlbrpirwvjhr.supabase.co', 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv');
 
-    let allGossips = [], allMessages = [];
     let currentChatTarget = null;
     let adminClicks = 0;
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
-    let currentAdminView = 'pending';
+    let currentFontIndex = localStorage.getItem('fontIndex') || 0;
 
-    const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-rain', 'bg-snow', 'bg-paper', 'bg-space'];
-    
+    const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-rain', 'bg-paper'];
+    const fonts = ['default', 'font-comfort', 'font-script'];
+
     window.cycleBackground = () => {
       currentBgIndex = (parseInt(currentBgIndex) + 1) % backgrounds.length;
       localStorage.setItem('bgIndex', currentBgIndex);
@@ -218,88 +228,33 @@
       if (bg !== 'default') document.body.classList.add(bg);
     }
 
+    window.cycleFont = () => {
+      currentFontIndex = (parseInt(currentFontIndex) + 1) % fonts.length;
+      localStorage.setItem('fontIndex', currentFontIndex);
+      document.body.classList.remove('font-comfort', 'font-script');
+      const font = fonts[currentFontIndex];
+      if (font !== 'default') document.body.classList.add(font);
+    }
+
     window.toggleTheme = () => {
       document.body.classList.toggle('dark-theme');
       document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
     }
 
-    // --- ПОИСК ЛЮДЕЙ ---
-    window.searchUsers = async () => {
-      const query = document.getElementById('searchUserInput').value.replace('@', '').trim().toLowerCase();
-      const resultsBox = document.getElementById('searchResults');
+    // --- ВАЛИДАЦИЯ ЮЗЕРНЕЙМА ---
+    window.saveProfile = async () => {
+      let uname = document.getElementById('newUsernameInput').value.trim();
+      const bio = document.getElementById('newBioInput').value.trim();
+      
+      // Убираем @ если есть
+      uname = uname.replace('@', '');
 
-      if (query.length < 2) {
-        resultsBox.innerHTML = '';
+      // Проверка на английский и цифры
+      const regex = /^[a-zA-Z0-9_]{1,10}$/;
+      if (!regex.test(uname)) {
+        alert('Юзернейм должен содержать только английские буквы, цифры и _ (максимум 10 символов)!');
         return;
       }
-
-      const { data } = await supabase.from('profiles').select('*').ilike('username', `%${query}%`);
-      
-      if (!data || data.length === 0) {
-        resultsBox.innerHTML = `<div class="empty-feed" style="padding: 10px;">Никого не найдено</div>`;
-      } else {
-        resultsBox.innerHTML = data.map(user => `
-          <div class="admin-chat-item" style="cursor: pointer;" onclick="openChat('${user.username}')">
-            <strong>@${user.username}</strong> <br> <small>${user.bio || 'Нет био'}</small>
-          </div>
-        `).join('');
-      }
-    }
-
-    window.openChat = (username) => {
-      currentChatTarget = username;
-      document.getElementById('chatTargetName').innerText = `@${username}`;
-      document.getElementById('chatContainer').style.display = 'flex';
-      document.getElementById('searchResults').innerHTML = '';
-      document.getElementById('searchUserInput').value = '';
-      loadMessages();
-    }
-
-    async function loadMessages() {
-      if (!currentChatTarget) return;
-      const myName = localStorage.getItem('myUsername') || 'Гость';
-
-      const { data } = await supabase.from('messages')
-        .select('*')
-        .or(`and(sender_name.eq.${myName},receiver_name.eq.${currentChatTarget}),and(sender_name.eq.${currentChatTarget},receiver_name.eq.${myName})`)
-        .order('created_at', { ascending: true });
-
-      allMessages = data || [];
-
-      const chatBox = document.getElementById('chatMessages');
-      if (allMessages.length === 0) {
-        chatBox.innerHTML = `<div class="empty-feed">Начни диалог</div>`;
-      } else {
-        chatBox.innerHTML = allMessages.map(msg => `
-          <div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">
-            ${msg.sender_name !== myName ? `<div style="font-size:0.7rem;opacity:0.7;">@${msg.sender_name}</div>` : ''}
-            ${msg.text}
-          </div>
-        `).join('');
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    }
-
-    window.sendMessageToUser = async () => {
-      if (!currentChatTarget) return alert('Выбери собеседника!');
-      const input = document.getElementById('chatInput');
-      const myName = localStorage.getItem('myUsername') || 'Гость';
-
-      await supabase.from('messages').insert([{
-        sender_name: myName,
-        receiver_name: currentChatTarget,
-        text: input.value
-      }]);
-
-      input.value = '';
-      loadMessages();
-    }
-
-    // --- ПРОФИЛЬ ---
-    window.saveProfile = async () => {
-      const uname = document.getElementById('newUsernameInput').value.trim();
-      const bio = document.getElementById('newBioInput').value.trim();
-      if (!uname) return alert('Введи юзернейм!');
 
       const { error } = await supabase.from('profiles').upsert({
         username: uname,
@@ -312,6 +267,8 @@
         localStorage.setItem('myBio', bio);
         loadProfile();
         alert('Профиль сохранен!');
+      } else {
+        alert('Этот ник уже занят, попробуй другой!');
       }
     }
 
@@ -337,7 +294,102 @@
       if (savedCover) document.getElementById('profileCover').style.backgroundImage = `url(${savedCover})`;
     }
 
-    // --- АДМИНКА (С ПЕРЕПИСКАМИ) ---
+    // --- СПИСОК ЧАТОВ ---
+    window.loadChats = async () => {
+      const myName = localStorage.getItem('myUsername') || 'гость';
+      const { data } = await supabase.from('messages').select('*').or(`sender_name.eq.${myName},receiver_name.eq.${myName}`).order('created_at', { ascending: false });
+      
+      const chatBox = document.getElementById('myChatsList');
+      if (!data || data.length === 0) {
+        chatBox.innerHTML = `<div class="empty-feed">У тебя пока нет переписок. Найди друга в поиске!</div>`;
+        return;
+      }
+
+      // Уникальные собеседники
+      const users = new Set();
+      data.forEach(msg => {
+        if (msg.sender_name !== myName) users.add(msg.sender_name);
+        if (msg.receiver_name !== myName) users.add(msg.receiver_name);
+      });
+
+      chatBox.innerHTML = Array.from(users).map(user => `
+        <div class="admin-chat-item" style="cursor:pointer;" onclick="openChat('${user}')">
+          <strong>@${user}</strong>
+        </div>
+      `).join('');
+      
+      // Показываем бейджик новых сообщений (просто для примера)
+      document.getElementById('unreadBadge').style.display = 'block';
+    }
+
+    window.searchUsers = async () => {
+      const query = document.getElementById('searchUserInput').value.replace('@', '').trim().toLowerCase();
+      const resultsBox = document.getElementById('searchResults');
+
+      if (query.length < 2) {
+        resultsBox.innerHTML = '';
+        return;
+      }
+
+      const { data } = await supabase.from('profiles').select('*').ilike('username', `%${query}%`);
+      
+      if (!data || data.length === 0) {
+        resultsBox.innerHTML = `<div class="empty-feed" style="padding: 10px;">Никого не найдено</div>`;
+      } else {
+        resultsBox.innerHTML = data.map(user => `
+          <div class="admin-chat-item" style="cursor: pointer;" onclick="openChat('${user.username}')">
+            <strong>@${user.username}</strong> <br> <small>${user.bio || 'Нет био'}</small>
+          </div>
+        `).join('');
+      }
+    }
+
+    window.openChat = async (username) => {
+      currentChatTarget = username;
+      document.getElementById('chatTargetName').innerText = username;
+      openTab('chatWindow', document.getElementById('chatsTabBtn'));
+      await loadMessages();
+    }
+
+    async function loadMessages() {
+      if (!currentChatTarget) return;
+      const myName = localStorage.getItem('myUsername') || 'гость';
+
+      const { data } = await supabase.from('messages')
+        .select('*')
+        .or(`and(sender_name.eq.${myName},receiver_name.eq.${currentChatTarget}),and(sender_name.eq.${currentChatTarget},receiver_name.eq.${myName})`)
+        .order('created_at', { ascending: true });
+
+      const chatBox = document.getElementById('chatMessages');
+      if (!data || data.length === 0) {
+        chatBox.innerHTML = `<div class="empty-feed">Начни диалог с @${currentChatTarget}</div>`;
+      } else {
+        chatBox.innerHTML = data.map(msg => `
+          <div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">
+            ${msg.text}
+          </div>
+        `).join('');
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    window.sendMessageToUser = async () => {
+      if (!currentChatTarget) return alert('Выбери собеседника!');
+      const input = document.getElementById('chatInput');
+      const myName = localStorage.getItem('myUsername') || 'гость';
+      if(!input.value.trim()) return;
+
+      await supabase.from('messages').insert([{
+        sender_name: myName,
+        receiver_name: currentChatTarget,
+        text: input.value
+      }]);
+
+      input.value = '';
+      loadMessages();
+    }
+
+    // --- АДМИНКА ---
     window.openAdmin = () => {
       adminClicks++;
       if (adminClicks >= 5) {
@@ -351,32 +403,28 @@
     }
 
     window.switchAdminTab = async (tab) => {
-      currentAdminView = tab;
       document.getElementById('btnAdminPending').classList.remove('active');
       document.getElementById('btnAdminChats').classList.remove('active');
       document.getElementById(tab === 'pending' ? 'btnAdminPending' : 'btnAdminChats').classList.add('active');
 
       const adminFeed = document.getElementById('adminFeed');
       if (tab === 'chats') {
-        // Загружаем все сообщения
         const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
         if (!data || data.length === 0) {
           adminFeed.innerHTML = `<div class="empty-feed">Переписок нет</div>`;
         } else {
           adminFeed.innerHTML = data.map(msg => `
             <div class="admin-chat-item">
-              <strong>${msg.sender_name}</strong> ➔ <strong>${msg.receiver_name}</strong><br>
+              <strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br>
               <span style="color:var(--text-muted);">${msg.text}</span>
             </div>
           `).join('');
         }
       } else {
-        // Тут логика модерации сплетен (как в прошлом коде)
         adminFeed.innerHTML = `<div class="empty-feed">Тут сплетни на проверку</div>`;
       }
     }
 
-    // --- ОБЩЕЕ ---
     window.openTab = (tabName, btn) => {
       let i, tabcontent = document.getElementsByClassName("tab-content");
       for (i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
@@ -384,11 +432,18 @@
       for (i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
       document.getElementById(tabName).classList.add("active");
       if (btn) btn.classList.add("active");
+      
+      if (tabName === 'chatsList') {
+        loadChats();
+        document.getElementById('unreadBadge').style.display = 'none';
+      }
     }
 
     window.onload = () => {
       const bg = backgrounds[currentBgIndex];
       if (bg !== 'default') document.body.classList.add(bg);
+      const font = fonts[currentFontIndex];
+      if (font !== 'default') document.body.classList.add(font);
       
       document.getElementById('newUsernameInput').value = localStorage.getItem('myUsername') || '';
       document.getElementById('newBioInput').value = localStorage.getItem('myBio') || '';

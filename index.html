@@ -64,6 +64,17 @@
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
 
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+    .action-btn { 
+      background: var(--card-bg); border: 2px solid var(--border); border-radius: 20px; padding: 6px 12px; 
+      font-size: 0.9rem; font-weight: 800; color: var(--text-muted); cursor: pointer; 
+      display: inline-flex; align-items: center; gap: 5px; transition: transform 0.1s;
+    }
+    .action-btn:active { transform: scale(0.95); }
+    .action-btn.liked { background: #d4edda; border-color: #28a745; color: #155724; cursor: not-allowed; }
+    .action-btn.disliked { background: #f8d7da; border-color: #dc3545; color: #721c24; cursor: not-allowed; }
+    .action-btn.reacted { background: var(--accent-light); border-color: var(--accent); color: var(--text-main); cursor: not-allowed; }
+
     .chat-container { display: flex; flex-direction: column; height: 400px; background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
@@ -105,7 +116,9 @@
     .draggable-text:active { cursor: grabbing; }
     .file-upload-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
     .file-label { background: var(--card-bg); border: 2px dashed var(--border); padding: 10px; border-radius: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; text-align: center; flex: 1; }
-    #imageInput, #memeImageInput { display: none; }
+    
+    /* Скрываем стандартные инпуты, но оставляем их рабочими */
+    #imageInput, #memeImageInput { opacity: 0; position: absolute; z-index: -1; }
   </style>
 </head>
 <body>
@@ -169,12 +182,17 @@
     <div id="memes" class="tab-content">
       <h3 style="margin-bottom: 15px; text-align: center;">Генератор мемов 😂</h3>
       <div class="question-form">
-        <input type="file" id="memeImageInput" accept="image/*" onchange="loadMemeImage(this)" style="margin-bottom: 10px;">
+        <!-- Добавил accept="image/*" и capture="environment" для камеры -->
+        <input type="file" id="memeImageInput" accept="image/*" capture="environment" onchange="loadMemeImage(this)" style="margin-bottom: 10px;">
+        <label for="memeImageInput" class="file-label" style="margin-bottom: 10px;">📷 Сделать фото или выбрать из галереи</label>
+        
         <input type="text" id="memeTextInput" placeholder="Введи текст для мема..." style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
         <button class="submit-btn" onclick="addTextToMeme()" style="background: #4facfe; margin-bottom: 10px;">Добавить текст</button>
+        
         <div class="meme-container" id="memeContainer">
           <img id="memeImage" src="" alt="Мем" crossorigin="anonymous">
         </div>
+        
         <button class="submit-btn" onclick="publishMeme()" id="publishMemeBtn" style="display: none; background: #28a745;">Опубликовать мем 🚀</button>
       </div>
     </div>
@@ -205,7 +223,7 @@
         
         <div class="file-upload-wrapper">
           <label for="imageInput" class="file-label" id="fileLabel">📷 Прикрепить фото</label>
-          <input type="file" id="imageInput" accept="image/*" onchange="previewImage(this)">
+          <input type="file" id="imageInput" accept="image/*" capture="environment" onchange="previewImage(this)">
         </div>
 
         <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
@@ -263,7 +281,6 @@
       document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
     }
 
-    // --- REALTIME (МГНОВЕННОЕ ОБНОВЛЕНИЕ) ---
     function subscribeToChanges() {
       supabase.channel('messages-channel')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
@@ -297,20 +314,62 @@
       if (!data || data.length === 0) {
         mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
       } else {
-        mainFeed.innerHTML = data.map(g => `
-          <div class="gossip-card">
-            ${g.image_url ? `<img src="${g.image_url}" class="gossip-image">` : ''}
-            ${g.meme_base64 ? `<img src="${g.meme_base64}" class="gossip-image">` : ''}
-            <div class="gossip-content">
-              <div class="gossip-author-row">
-                <div class="author-avatar">🦊</div>
-                <div class="gossip-author">@${g.author}</div>
-              </div>
-              ${g.text ? `<div class="gossip-text">${g.text}</div>` : ''}
+        mainFeed.innerHTML = data.map(g => renderGossipCard(g)).join('');
+      }
+    }
+
+    function renderGossipCard(g) {
+      const liked = localStorage.getItem(`voted_${g.id}_like`) === 'true';
+      const disliked = localStorage.getItem(`voted_${g.id}_dislike`) === 'true';
+      const laughed = localStorage.getItem(`voted_${g.id}_laugh`) === 'true';
+      const scared = localStorage.getItem(`voted_${g.id}_scared`) === 'true';
+      const reactions = g.reactions || {};
+
+      return `
+        <div class="gossip-card">
+          ${g.image_url ? `<img src="${g.image_url}" class="gossip-image">` : ''}
+          ${g.meme_base64 ? `<img src="${g.meme_base64}" class="gossip-image">` : ''}
+          <div class="gossip-content">
+            <div class="gossip-author-row">
+              <div class="author-avatar">🦊</div>
+              <div class="gossip-author">@${g.author}</div>
+            </div>
+            ${g.text ? `<div class="gossip-text">${g.text}</div>` : ''}
+            
+            <div class="action-row">
+              <button class="action-btn ${liked ? 'liked' : ''}" onclick="reactGossip('${g.id}', 'like')" ${liked || disliked ? 'disabled' : ''}>
+                👍 <span>${g.likes || 0}</span>
+              </button>
+              <button class="action-btn ${disliked ? 'disliked' : ''}" onclick="reactGossip('${g.id}', 'dislike')" ${liked || disliked ? 'disabled' : ''}>
+                👎 <span>${g.dislikes || 0}</span>
+              </button>
+              <button class="action-btn ${laughed ? 'reacted' : ''}" onclick="reactGossip('${g.id}', 'laugh')" ${laughed ? 'disabled' : ''}>
+                😂 <span>${reactions.laugh || 0}</span>
+              </button>
+              <button class="action-btn ${scared ? 'reacted' : ''}" onclick="reactGossip('${g.id}', 'scared')" ${scared ? 'disabled' : ''}>
+                😱 <span>${reactions.scared || 0}</span>
+              </button>
             </div>
           </div>
-        `).join('');
+        </div>
+      `;
+    }
+
+    window.reactGossip = async (id, type) => {
+      if (localStorage.getItem(`voted_${id}_${type}`)) return;
+      const gossip = (await supabase.from('gossips').select('*').eq('id', id).single()).data;
+      if (!gossip) return;
+
+      if (type === 'like') await supabase.from('gossips').update({ likes: (gossip.likes || 0) + 1 }).eq('id', id);
+      else if (type === 'dislike') await supabase.from('gossips').update({ dislikes: (gossip.dislikes || 0) + 1 }).eq('id', id);
+      else {
+        let reactions = gossip.reactions || {};
+        reactions[type] = (reactions[type] || 0) + 1;
+        await supabase.from('gossips').update({ reactions: reactions }).eq('id', id);
       }
+      
+      localStorage.setItem(`voted_${id}_${type}`, 'true');
+      loadGossips();
     }
 
     window.saveProfile = async () => {
@@ -318,16 +377,10 @@
       const bio = document.getElementById('newBioInput').value.trim();
       
       const regex = /^[a-z0-9_]{1,10}$/;
-      if (!regex.test(uname)) { 
-        alert('Юзернейм должен содержать только английские строчные буквы, цифры и _ (до 10 символов)!'); 
-        return; 
-      }
+      if (!regex.test(uname)) { alert('Только англ. строчные буквы, цифры и _ (до 10 символов)!'); return; }
 
       const { data: existingUser } = await supabase.from('profiles').select('id').ilike('username', uname).neq('username', localStorage.getItem('myUsername'));
-      if (existingUser && existingUser.length > 0) {
-        alert('Этот ник уже занят!');
-        return;
-      }
+      if (existingUser && existingUser.length > 0) { alert('Этот ник уже занят!'); return; }
 
       const { error } = await supabase.from('profiles').upsert({ username: uname, bio: bio, cover_url: localStorage.getItem('profileCover') }, { onConflict: 'username' });
 
@@ -418,7 +471,7 @@
       input.value = '';
     }
 
-    // --- МЕМ-ГЕНЕРАТОР ---
+    // --- МЕМ-ГЕНЕРАТОР (С ФОТО) ---
     window.loadMemeImage = (input) => {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -521,7 +574,6 @@
       });
     }
 
-    // --- ОТПРАВКА СПЛЕТНИ (С ФОТО) ---
     window.previewImage = (input) => {
       if (input.files && input.files[0]) {
         selectedFile = input.files[0];
@@ -559,7 +611,6 @@
       setTimeout(() => { btn.innerText = 'Отправить'; btn.style.background = ''; btn.disabled = false; openTab('gossips', document.querySelector('.nav-btn')); }, 1500);
     };
 
-    // --- АДМИНКА ---
     window.openAdmin = () => {
       adminClicks++;
       if (adminClicks >= 5) {
@@ -660,7 +711,6 @@
       loadGossips();
       subscribeToChanges();
 
-      // Подключаем html2canvas для мемов
       const script = document.createElement('script');
       script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
       document.head.appendChild(script);

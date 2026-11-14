@@ -13,22 +13,65 @@
       --shadow: 0 8px 32px 0 rgba(180, 160, 140, 0.15);
     }
     body.dark-theme {
-      --bg-color: #1a1a1a; --dot-color: #2a2a2a; --card-bg: rgba(36, 36, 36, 0.85);
-      --text-main: #e0e0e0; --text-muted: #999999; --accent: #ff8a5c; --accent-light: #3d2a20; --border: rgba(51, 51, 51, 0.5);
-      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+      --bg-color: #121212; --dot-color: #1e1e1e; --card-bg: rgba(30, 30, 30, 0.85);
+      --text-main: #e0e0e0; --text-muted: #888888; --accent: #ff8a5c; --accent-light: #3d2a20; --border: rgba(60, 60, 60, 0.5);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
     }
     body.font-comfort { --font-main: 'Comfortaa', cursive; }
     body.font-script { --font-main: 'Marck Script', cursive; }
 
-    /* Фоны */
-    body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 2px); background-size: 50px 50px; }
-    body.bg-matrix { --bg-color: #000; background-image: linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px); background-size: 100% 20px; }
-    body.bg-rain { --bg-color: #2c3e50; background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 11px); }
-    body.bg-snow { --bg-color: #e0f7fa; background-image: radial-gradient(circle, #fff 2px, transparent 2px); background-size: 40px 40px; }
-    body.bg-leaves { --bg-color: #ff8a65; background-image: radial-gradient(circle, #fff 3px, transparent 3px); background-size: 60px 60px; }
-    body.bg-dust { --bg-color: #3e2723; background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 20px 20px; }
-    body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
-    body.bg-space { --bg-color: #000; background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); }
+    /* ПРОРАБОТАННЫЕ ФОНЫ */
+    body.bg-stars { 
+      --bg-color: #0b0b1a; 
+      background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+        radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+      background-size: 200px 200px;
+      background-repeat: repeat;
+    }
+    body.bg-matrix { 
+      --bg-color: #000; 
+      background-image: 
+        linear-gradient(180deg, rgba(0, 255, 0, 0.15) 0%, transparent 10%, transparent 90%, rgba(0, 255, 0, 0.15) 100%),
+        linear-gradient(90deg, rgba(0, 255, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(rgba(0, 255, 0, 0.1) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+    }
+    body.bg-rain { 
+      --bg-color: #1a1a2e; 
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255, 255, 255, 0.08) 10px, rgba(255, 255, 255, 0.08) 11px),
+                        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 60%);
+    }
+    body.bg-snow { 
+      --bg-color: #e3f2fd; 
+      background-image: 
+        radial-gradient(circle, #fff 3px, transparent 4px),
+        radial-gradient(circle, #fff 2px, transparent 3px);
+      background-size: 60px 60px, 40px 40px;
+      background-position: 0 0, 30px 30px;
+    }
+    body.bg-leaves { 
+      --bg-color: #e65100; 
+      background-image: radial-gradient(circle at 20% 30%, #ff9800 2px, transparent 3px),
+                        radial-gradient(circle at 80% 70%, #ff5722 3px, transparent 4px);
+      background-size: 50px 50px;
+    }
+    body.bg-dust { 
+      --bg-color: #3e2723; 
+      background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+      background-size: 15px 15px;
+    }
+    body.bg-paper { 
+      --bg-color: #fdfbf7; 
+      background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); 
+      background-size: 20px 20px; 
+    }
+    body.bg-space { 
+      --bg-color: #000; 
+      background-image: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); 
+    }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -40,7 +83,7 @@
     }
     
     .card, .gossip-card { 
-      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       box-shadow: var(--shadow); border: 1px solid var(--border);
     }
 
@@ -111,7 +154,6 @@
     .badge { background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 8px; font-size: 0.65rem; font-weight: 800; }
     .particle { position: fixed; pointer-events: none; font-size: 1.5rem; z-index: 9999; }
 
-    /* Стили для мем-генератора */
     .meme-container { position: relative; width: 100%; margin-bottom: 15px; display: none; overflow: hidden; border-radius: 10px; }
     .meme-container img { width: 100%; display: block; }
     
@@ -161,22 +203,15 @@
       <div class="feed-container" id="topWeekFeed"></div>
     </div>
 
-    <!-- ГЕНЕРАТОР МЕМОВ -->
     <div id="memes" class="tab-content">
       <h3 style="margin-bottom: 15px; text-align: center;">Генератор мемов 😂</h3>
-      
       <div class="question-form">
         <input type="file" id="memeImageInput" accept="image/*" onchange="loadMemeImage(this)" style="margin-bottom: 10px;">
-        
         <input type="text" id="memeTextInput" placeholder="Введи текст для мема..." style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main);">
-        
         <button class="submit-btn" onclick="addTextToMeme()" style="background: #4facfe; margin-bottom: 10px;">Добавить текст</button>
-        
         <div class="meme-container" id="memeContainer">
           <img id="memeImage" src="" alt="Мем" crossorigin="anonymous">
-          <!-- Сюда будут добавляться перетаскиваемые тексты -->
         </div>
-        
         <button class="submit-btn" onclick="publishMeme()" id="publishMemeBtn" style="display: none; background: #28a745;">Опубликовать мем 🚀</button>
       </div>
     </div>
@@ -233,7 +268,6 @@
     const ADMIN_PASSWORD = '20120521s';
     const ADMIN_ANSWER = '2012';
 
-    // ФОНЫ
     const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-rain', 'bg-snow', 'bg-leaves', 'bg-dust', 'bg-paper', 'bg-space'];
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
 
@@ -274,7 +308,6 @@
       currentPage = 0;
       document.getElementById('mainFeed').innerHTML = '';
       loadMoreGossips();
-      
       updateShopUI();
     }
 
@@ -308,7 +341,7 @@
       }
     });
 
-    // --- МЕМ-ГЕНЕРАТОР С ПЕРЕТАСКИВАНИЕМ ---
+    // --- МЕМ-ГЕНЕРАТОР (ИСПРАВЛЕННЫЙ) ---
     window.loadMemeImage = (input) => {
       if (input.files && input.files[0]) {
         const reader = new FileReader();
@@ -316,8 +349,6 @@
           document.getElementById('memeImage').src = e.target.result;
           document.getElementById('memeContainer').style.display = 'block';
           document.getElementById('publishMemeBtn').style.display = 'block';
-          
-          // Очищаем старые тексты
           document.querySelectorAll('.draggable-text').forEach(el => el.remove());
         };
         reader.readAsDataURL(input.files[0]);
@@ -334,9 +365,8 @@
       newText.innerText = text;
       newText.style.left = '50%';
       newText.style.top = '50%';
-      newText.style.transform = 'translate(-50%, -50%)'; // Центрируем
+      newText.style.transform = 'translate(-50%, -50%)';
       
-      // Логика перетаскивания
       let isDragging = false;
       let offsetX, offsetY;
 
@@ -344,25 +374,21 @@
         isDragging = true;
         offsetX = e.clientX - newText.getBoundingClientRect().left;
         offsetY = e.clientY - newText.getBoundingClientRect().top;
-        newText.style.transform = 'none'; // Убираем центрирование при перетаскивании
+        newText.style.transform = 'none';
       });
 
       document.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         let x = e.clientX - offsetX - container.getBoundingClientRect().left;
         let y = e.clientY - offsetY - container.getBoundingClientRect().top;
-        
-        // Ограничиваем в пределах картинки
         x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
         y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
-
         newText.style.left = `${x}px`;
         newText.style.top = `${y}px`;
       });
 
       document.addEventListener('mouseup', () => isDragging = false);
 
-      // Для телефонов (тач)
       newText.addEventListener('touchstart', (e) => {
         isDragging = true;
         const touch = e.touches[0];
@@ -377,10 +403,8 @@
         const touch = e.touches[0];
         let x = touch.clientX - offsetX - container.getBoundingClientRect().left;
         let y = touch.clientY - offsetY - container.getBoundingClientRect().top;
-
         x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
         y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
-
         newText.style.left = `${x}px`;
         newText.style.top = `${y}px`;
       });
@@ -403,43 +427,39 @@
       btn.innerText = 'Создание мема...'; btn.disabled = true;
 
       // Используем html2canvas для отрисовки
-      html2canvas(container, { useCORS: true, allowTaint: true }).then(async (canvas) => {
-        const base64Image = canvas.toDataURL('image/png');
+      html2canvas(container, { 
+        useCORS: true, 
+        allowTaint: true,
+        backgroundColor: null 
+      }).then(async (canvas) => {
+        // Конвертируем прямо в Base64 (без загрузки файлов в Storage)
+        const base64Image = canvas.toDataURL('image/jpeg', 0.7); // Сжатие до 70% для экономии места
         const nick = document.getElementById('nickname').innerText;
 
-        // Отправляем в базу как base64 (в реальном проекте лучше загружать в Storage)
-        // Для простоты загрузим в Supabase Storage
-        const blob = await (await fetch(base64Image)).blob();
-        const fileName = `meme_${Date.now()}.png`;
-        
-        const { error } = await supabase.storage.from('images').upload(`public/${fileName}`, blob);
-        
-        if (error) {
-          alert('Ошибка загрузки мема. Попробуйте еще раз.');
-          btn.innerText = 'Опубликовать мем 🚀'; btn.disabled = false;
-          return;
-        }
-
-        const { data: urlData } = supabase.storage.from('images').getPublicUrl(`public/${fileName}`);
-
-        // Отправляем в БД с флагом, что это мем
-        await supabase.from('gossips').insert([{ 
+        const { error } = await supabase.from('gossips').insert([{ 
           author: nick, 
           text: "Мем от " + nick, 
           status: 'pending', 
           likes: 0,
-          meme_url: urlData.publicUrl
+          meme_base64: base64Image
         }]);
 
-        btn.innerText = 'Мем на проверке! ✅';
-        btn.style.background = '#17a2b8';
-        
-        setTimeout(() => {
-          btn.innerText = 'Опубликовать мем 🚀';
-          btn.style.background = '#28a745';
-          btn.disabled = false;
-          openTab('gossips', document.querySelector('.nav-btn'));
-        }, 2000);
+        if (error) {
+          alert('Ошибка отправки: ' + error.message);
+          btn.innerText = 'Опубликовать мем 🚀'; btn.disabled = false;
+        } else {
+          btn.innerText = 'Мем на проверке! ✅';
+          btn.style.background = '#17a2b8';
+          setTimeout(() => {
+            btn.innerText = 'Опубликовать мем 🚀';
+            btn.style.background = '#28a745';
+            btn.disabled = false;
+            openTab('gossips', document.querySelector('.nav-btn'));
+          }, 2000);
+        }
+      }).catch((err) => {
+        alert('Ошибка создания картинки. Попробуйте еще раз.');
+        btn.innerText = 'Опубликовать мем 🚀'; btn.disabled = false;
       });
     }
 
@@ -544,7 +564,7 @@
         adminFeed.innerHTML = pending.length === 0 ? `<div class="empty-feed">Нет новых</div>` : pending.map(g => `
           <div class="gossip-card admin-card"><div class="gossip-content">
             <div class="gossip-author">${g.author}</div>
-            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
+            ${g.meme_base64 ? `<img src="${g.meme_base64}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
             <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ В корзину</button>
           </div></div>`).join('');
@@ -552,14 +572,14 @@
         adminFeed.innerHTML = published.length === 0 ? `<div class="empty-feed">Пусто</div>` : published.map(g => `
           <div class="gossip-card published-card"><div class="gossip-content">
             <div class="gossip-author">${g.author}</div>
-            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
+            ${g.meme_base64 ? `<img src="${g.meme_base64}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn delete-btn" onclick="deleteGossip('${g.id}')">❌ В корзину</button>
           </div></div>`).join('');
       } else {
         adminFeed.innerHTML = deleted.length === 0 ? `<div class="empty-feed">Корзина пуста</div>` : deleted.map(g => `
           <div class="gossip-card deleted-card"><div class="gossip-content">
             <div class="gossip-author">${g.author}</div>
-            ${g.meme_url ? `<img src="${g.meme_url}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
+            ${g.meme_base64 ? `<img src="${g.meme_base64}" style="max-width:100%; border-radius:8px; margin-bottom:10px;">` : `<div class="gossip-text">${g.text}</div>`}
             <button class="admin-btn restore-btn" onclick="restoreGossip('${g.id}')">♻️ Восстановить</button>
           </div></div>`).join('');
       }
@@ -572,14 +592,14 @@
 
       return `
         <div class="gossip-card">
-          ${gossip.meme_url ? `<img src="${gossip.meme_url}" class="meme-feed-image">` : ''}
+          ${gossip.meme_base64 ? `<img src="${gossip.meme_base64}" class="meme-feed-image">` : ''}
           ${gossip.image_url ? `<img src="${gossip.image_url}" class="gossip-image">` : ''}
           <div class="gossip-content">
             <div class="gossip-author-row">
               <div class="author-avatar ${gossip.author_frame || ''}">${gossip.emoji || '🦊'}</div>
               <div class="gossip-author">${gossip.author} <span class="badge">${gossip.author_class || 'Школа'}</span></div>
             </div>
-            ${!gossip.meme_url ? `<div class="gossip-text">${gossip.text}</div>` : ''}
+            ${!gossip.meme_base64 ? `<div class="gossip-text">${gossip.text}</div>` : ''}
             <div class="action-row">
               <button class="action-btn ${liked ? 'liked' : ''}" onclick="likeGossip(event, '${gossip.id}')" ${liked ? 'disabled' : ''}>👍 <span>${gossip.likes || 0}</span></button>
             </div>
@@ -616,7 +636,6 @@
 
       loadData();
       
-      // Подключаем библиотеку для создания картинок из HTML
       const script = document.createElement('script');
       script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
       document.head.appendChild(script);

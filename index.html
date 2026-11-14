@@ -20,8 +20,8 @@
     body.font-comfort { --font-main: 'Comfortaa', cursive; }
     body.font-script { --font-main: 'Marck Script', cursive; }
     
-    body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
-    body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px), linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px, 30px 30px; }
+    body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
+    body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px; }
     body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -63,8 +63,6 @@
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
 
-    /* Мессенджер */
-    .search-user-input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); margin-bottom: 15px; outline: none; }
     .chat-container { display: flex; flex-direction: column; height: 400px; background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
@@ -73,7 +71,6 @@
     .chat-input-row { display: flex; padding: 10px; background: var(--card-bg); border-top: 1px solid var(--border); gap: 10px; }
     .chat-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none; }
 
-    /* Профиль */
     .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .profile-cover { width: 100%; height: 120px; background: var(--accent-light); border-radius: 16px; margin-bottom: -40px; background-size: cover; background-position: center; }
     .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--card-bg); border: 4px solid var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; z-index: 2; }
@@ -124,7 +121,7 @@
 
     <div id="messenger" class="tab-content">
       <h3 style="margin-bottom: 15px;">Поиск людей 🔍</h3>
-      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()">
+      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()" style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); margin-bottom: 15px;">
       <div id="searchResults"></div>
     </div>
 
@@ -189,19 +186,16 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
     const supabase = createClient('https://owcxvgvajlbrpirwvjhr.supabase.co', 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv');
 
-    // КРУТЫЕ НИКИ ПО УМОЛЧАНИЮ
     const defaultNicks = ["altyxa", "shtyrmovik", "sigma", "skibidi", "chad", "gyatt", "rizzler", "sigma_boy", "ohio", "fanum_tax", "kai_cenat", "grimace", "amogus", "sussy", "gigachad", "npc", "cringe", "based", "copium", "hopium", "pov", "ratio", "cap", "bussin"];
 
     let currentChatTarget = null;
     let adminClicks = 0;
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
-    let currentFontIndex = localStorage.getItem('fontIndex') || 0;
     let currentAdminView = 'pending';
 
     const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-paper'];
     const fonts = ['default', 'font-comfort', 'font-script'];
 
-    // Генерация ника при первом входе
     function generateDefaultNick() {
       const randomNick = defaultNicks[Math.floor(Math.random() * defaultNicks.length)];
       return `${randomNick}${Math.floor(10 + Math.random() * 90)}`;
@@ -216,11 +210,10 @@
     }
 
     window.cycleFont = () => {
-      currentFontIndex = (parseInt(currentFontIndex) + 1) % fonts.length;
-      localStorage.setItem('fontIndex', currentFontIndex);
+      let fIdx = (parseInt(localStorage.getItem('fontIndex') || 0) + 1) % fonts.length;
+      localStorage.setItem('fontIndex', fIdx);
       document.body.classList.remove('font-comfort', 'font-script');
-      const font = fonts[currentFontIndex];
-      if (font !== 'default') document.body.classList.add(font);
+      if (fonts[fIdx] !== 'default') document.body.classList.add(fonts[fIdx]);
     }
 
     window.toggleTheme = () => {
@@ -228,43 +221,38 @@
       document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
     }
 
-    // --- REALTIME ПОДПИСКИ (МГНОВЕННОЕ ОБНОВЛЕНИЕ) ---
+    // --- REALTIME (МГНОВЕННОЕ ОБНОВЛЕНИЕ) ---
     function subscribeToChanges() {
-      // Слушаем сплетни (для ленты и админки)
-      supabase.channel('gossips-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'gossips' }, payload => {
-          loadGossips(); // Перезагружаем ленту
-          if (document.getElementById('admin').classList.contains('active')) {
-            loadAdminData(); // Если мы в админке, обновляем её
-          }
-        }).subscribe();
-
-      // Слушаем сообщения (для чатов)
+      // Следим за новыми сообщениями
       supabase.channel('messages-channel')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
           const myName = localStorage.getItem('myUsername') || 'гость';
           const newMsg = payload.new;
           
-          // Если сообщение пришло нам и мы не в чате с этим человеком
           if (newMsg.receiver_name === myName && currentChatTarget !== newMsg.sender_name) {
             document.getElementById('unreadBadge').style.display = 'block';
           }
           
-          // Если мы в чате с этим человеком, обновляем сообщения
           if (currentChatTarget && (newMsg.sender_name === currentChatTarget || newMsg.receiver_name === currentChatTarget)) {
             loadMessages();
           }
-          // Обновляем список чатов, если мы на этой вкладке
           if (document.getElementById('chatsList').classList.contains('active')) {
             loadChats();
           }
         }).subscribe();
+
+      // Следим за сплетнями
+      supabase.channel('gossips-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'gossips' }, payload => {
+          loadGossips();
+          if (document.getElementById('admin').classList.contains('active')) {
+            loadAdminData();
+          }
+        }).subscribe();
     }
 
-    // --- ЗАГРУЗКА СПЛЕТЕН ---
     async function loadGossips() {
       const { data } = await supabase.from('gossips').select('*').eq('status', 'published').eq('is_deleted', false).order('id', { ascending: false });
-      
       const mainFeed = document.getElementById('mainFeed');
       if (!data || data.length === 0) {
         mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
@@ -283,31 +271,21 @@
       }
     }
 
-    // --- ПРОФИЛЬ ---
     window.saveProfile = async () => {
       let uname = document.getElementById('newUsernameInput').value.trim().replace('@', '');
       const bio = document.getElementById('newBioInput').value.trim();
       
       const regex = /^[a-zA-Z0-9_]{1,10}$/;
-      if (!regex.test(uname)) {
-        alert('Юзернейм должен содержать только английские буквы, цифры и _ (максимум 10 символов)!');
-        return;
-      }
+      if (!regex.test(uname)) { alert('Только англ. буквы, цифры и _ (до 10 символов)!'); return; }
 
-      const { error } = await supabase.from('profiles').upsert({
-        username: uname,
-        bio: bio,
-        cover_url: localStorage.getItem('profileCover')
-      }, { onConflict: 'username' });
+      const { error } = await supabase.from('profiles').upsert({ username: uname, bio: bio, cover_url: localStorage.getItem('profileCover') }, { onConflict: 'username' });
 
       if (!error) {
         localStorage.setItem('myUsername', uname);
         localStorage.setItem('myBio', bio);
         loadProfile();
         alert('Профиль сохранен!');
-      } else {
-        alert('Этот ник уже занят!');
-      }
+      } else { alert('Этот ник уже занят!'); }
     }
 
     window.uploadCover = async (input) => {
@@ -327,29 +305,19 @@
       if (!savedUname) {
         const newNick = generateDefaultNick();
         localStorage.setItem('myUsername', newNick);
-        // Создаем профиль в базе
         await supabase.from('profiles').insert([{ username: newNick }]);
       }
-
-      const currentUname = localStorage.getItem('myUsername');
-      const savedBio = localStorage.getItem('myBio') || 'Тут будет твое био';
-      const savedCover = localStorage.getItem('profileCover');
-
-      document.getElementById('profileUsername').innerText = `@${currentUname}`;
-      document.getElementById('profileBio').innerText = savedBio;
-      if (savedCover) document.getElementById('profileCover').style.backgroundImage = `url(${savedCover})`;
+      document.getElementById('profileUsername').innerText = `@${localStorage.getItem('myUsername')}`;
+      document.getElementById('profileBio').innerText = localStorage.getItem('myBio') || 'Тут будет твое био';
+      if (localStorage.getItem('profileCover')) document.getElementById('profileCover').style.backgroundImage = `url(${localStorage.getItem('profileCover')})`;
     }
 
-    // --- ЧАТЫ ---
     window.loadChats = async () => {
       const myName = localStorage.getItem('myUsername');
       const { data } = await supabase.from('messages').select('*').or(`sender_name.eq.${myName},receiver_name.eq.${myName}`).order('created_at', { ascending: false });
       
       const chatBox = document.getElementById('myChatsList');
-      if (!data || data.length === 0) {
-        chatBox.innerHTML = `<div class="empty-feed">У тебя пока нет переписок.</div>`;
-        return;
-      }
+      if (!data || data.length === 0) { chatBox.innerHTML = `<div class="empty-feed">У тебя пока нет переписок.</div>`; return; }
 
       const users = new Set();
       data.forEach(msg => {
@@ -357,11 +325,7 @@
         if (msg.receiver_name !== myName) users.add(msg.receiver_name);
       });
 
-      chatBox.innerHTML = Array.from(users).map(user => `
-        <div class="admin-chat-item" style="cursor:pointer;" onclick="openChat('${user}')">
-          <strong>@${user}</strong>
-        </div>
-      `).join('');
+      chatBox.innerHTML = Array.from(users).map(user => `<div class="admin-chat-item" style="cursor:pointer;" onclick="openChat('${user}')"><strong>@${user}</strong></div>`).join('');
     }
 
     window.searchUsers = async () => {
@@ -370,15 +334,7 @@
       if (query.length < 2) { resultsBox.innerHTML = ''; return; }
 
       const { data } = await supabase.from('profiles').select('*').ilike('username', `%${query}%`);
-      if (!data || data.length === 0) {
-        resultsBox.innerHTML = `<div class="empty-feed" style="padding: 10px;">Никого не найдено</div>`;
-      } else {
-        resultsBox.innerHTML = data.map(user => `
-          <div class="admin-chat-item" style="cursor: pointer;" onclick="openChat('${user.username}')">
-            <strong>@${user.username}</strong>
-          </div>
-        `).join('');
-      }
+      resultsBox.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed" style="padding: 10px;">Никого не найдено</div>` : data.map(user => `<div class="admin-chat-item" style="cursor: pointer;" onclick="openChat('${user.username}')"><strong>@${user.username}</strong></div>`).join('');
     }
 
     window.openChat = async (username) => {
@@ -391,19 +347,12 @@
     async function loadMessages() {
       if (!currentChatTarget) return;
       const myName = localStorage.getItem('myUsername');
-
-      const { data } = await supabase.from('messages')
-        .select('*')
-        .or(`and(sender_name.eq.${myName},receiver_name.eq.${currentChatTarget}),and(sender_name.eq.${currentChatTarget},receiver_name.eq.${myName})`)
-        .order('created_at', { ascending: true });
+      const { data } = await supabase.from('messages').select('*').or(`and(sender_name.eq.${myName},receiver_name.eq.${currentChatTarget}),and(sender_name.eq.${currentChatTarget},receiver_name.eq.${myName})`).order('created_at', { ascending: true });
 
       const chatBox = document.getElementById('chatMessages');
-      if (!data || data.length === 0) {
-        chatBox.innerHTML = `<div class="empty-feed">Начни диалог с @${currentChatTarget}</div>`;
-      } else {
-        chatBox.innerHTML = data.map(msg => `
-          <div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">${msg.text}</div>
-        `).join('');
+      if (!data || data.length === 0) { chatBox.innerHTML = `<div class="empty-feed">Начни диалог с @${currentChatTarget}</div>`; }
+      else {
+        chatBox.innerHTML = data.map(msg => `<div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">${msg.text}</div>`).join('');
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
@@ -414,13 +363,10 @@
       const myName = localStorage.getItem('myUsername');
       if(!input.value.trim()) return;
 
-      await supabase.from('messages').insert([{
-        sender_name: myName, receiver_name: currentChatTarget, text: input.value
-      }]);
+      await supabase.from('messages').insert([{ sender_name: myName, receiver_name: currentChatTarget, text: input.value }]);
       input.value = '';
     }
 
-    // --- ОТПРАВКА СПЛЕТНИ ---
     window.sendMessage = async (event) => {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
@@ -435,7 +381,6 @@
       setTimeout(() => { btn.innerText = 'Отправить'; btn.style.background = ''; btn.disabled = false; openTab('gossips', document.querySelector('.nav-btn')); }, 1500);
     };
 
-    // --- АДМИНКА ---
     window.openAdmin = () => {
       adminClicks++;
       if (adminClicks >= 5) {
@@ -461,12 +406,7 @@
       const adminFeed = document.getElementById('adminFeed');
       if (currentAdminView === 'chats') {
         const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-        adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Переписок нет</div>` : data.map(msg => `
-          <div class="admin-chat-item">
-            <strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br>
-            <span style="color:var(--text-muted);">${msg.text}</span>
-          </div>
-        `).join('');
+        adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Переписок нет</div>` : data.map(msg => `<div class="admin-chat-item"><strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br><span style="color:var(--text-muted);">${msg.text}</span></div>`).join('');
       } else {
         const { data } = await supabase.from('gossips').select('*').eq('status', 'pending');
         adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Нет новых сплетен</div>` : data.map(g => `
@@ -501,15 +441,16 @@
     window.onload = async () => {
       const bg = backgrounds[currentBgIndex];
       if (bg !== 'default') document.body.classList.add(bg);
-      const font = fonts[currentFontIndex];
-      if (font !== 'default') document.body.classList.add(font);
+      
+      let fIdx = localStorage.getItem('fontIndex') || 0;
+      if (fonts[fIdx] !== 'default') document.body.classList.add(fonts[fIdx]);
       
       await loadProfile();
       document.getElementById('newUsernameInput').value = localStorage.getItem('myUsername') || '';
       document.getElementById('newBioInput').value = localStorage.getItem('myBio') || '';
       
       loadGossips();
-      subscribeToChanges(); // Включаем "живое" обновление
+      subscribeToChanges(); // Включаем прослушку
     };
   </script>
 </body>

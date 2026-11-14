@@ -47,7 +47,7 @@
     .site-header h1 { font-size: 2rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
     
     .nav-tabs { display: flex; gap: 8px; margin-bottom: 25px; background: var(--card-bg); padding: 8px; border-radius: 20px; border: 2px solid var(--border); flex-wrap: wrap; justify-content: center; width: 90%; max-width: 480px; }
-    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.85rem; font-weight: 800; padding: 10px 10px; border-radius: 14px; cursor: pointer; flex: 1; position: relative; }
+    .nav-btn { background: transparent; border: none; color: var(--text-muted); font-size: 0.8rem; font-weight: 800; padding: 10px 8px; border-radius: 14px; cursor: pointer; flex: 1; position: relative; }
     .nav-btn.active { background: var(--accent-light); color: var(--text-main); }
     #adminTabBtn { display: none; background: #ff4d4d; color: white; }
 
@@ -57,6 +57,7 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     
     .gossip-card { border-radius: 16px; text-align: left; overflow: hidden; display: flex; flex-direction: column; margin-bottom: 20px; }
+    .gossip-image { width: 100%; max-height: 300px; object-fit: cover; border-bottom: 2px solid var(--border); }
     .gossip-content { padding: 15px; }
     .gossip-author-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
     .author-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; border: 2px solid var(--accent); }
@@ -92,12 +93,25 @@
     .user-admin-item span { font-weight: 700; color: var(--accent); }
     .admin-input { padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-main); font-size: 0.8rem; width: 100px; margin-right: 5px; }
     .admin-save-btn { background: #28a745; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+
+    /* Стили для мем-генератора */
+    .meme-container { position: relative; width: 100%; margin-bottom: 15px; display: none; overflow: hidden; border-radius: 10px; }
+    .meme-container img { width: 100%; display: block; }
+    .draggable-text {
+      position: absolute; color: white; font-family: 'Impact', sans-serif; text-transform: uppercase;
+      text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;
+      font-size: 2rem; line-height: 1.1; cursor: grab; user-select: none; padding: 5px; text-align: center;
+    }
+    .draggable-text:active { cursor: grabbing; }
+    .file-upload-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+    .file-label { background: var(--card-bg); border: 2px dashed var(--border); padding: 10px; border-radius: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; text-align: center; flex: 1; }
+    #imageInput, #memeImageInput { display: none; }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <div class="profile-btn" id="myAvatarBtn" onclick="openTab('profile', document.querySelectorAll('.nav-btn')[3])">🦊</div>
+    <div class="profile-btn" id="myAvatarBtn" onclick="openTab('profile', document.querySelectorAll('.nav-btn')[4])">🦊</div>
     <div class="controls">
       <button class="icon-btn" onclick="cycleBackground()" id="bgBtn" title="Сменить фон">🌌</button>
       <button class="icon-btn" onclick="cycleFont()" id="fontBtn" title="Сменить шрифт">🅰️</button>
@@ -114,6 +128,7 @@
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
     <button class="nav-btn" onclick="openTab('messenger', this)">💬 Поиск</button>
     <button class="nav-btn" id="chatsTabBtn" onclick="openTab('chatsList', this)">📥 Чаты <span id="unreadBadge" style="display:none; background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.6rem; position:absolute; top:2px; right:2px;">!</span></button>
+    <button class="nav-btn" onclick="openTab('memes', this)">🖼️ Мемы</button>
     <button class="nav-btn" onclick="openTab('profile', this)">👤 Профиль</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
     <button class="nav-btn" id="adminTabBtn" onclick="openTab('admin', this)">🛠️ Админка</button>
@@ -150,6 +165,20 @@
       </div>
     </div>
 
+    <!-- ГЕНЕРАТОР МЕМОВ -->
+    <div id="memes" class="tab-content">
+      <h3 style="margin-bottom: 15px; text-align: center;">Генератор мемов 😂</h3>
+      <div class="question-form">
+        <input type="file" id="memeImageInput" accept="image/*" onchange="loadMemeImage(this)" style="margin-bottom: 10px;">
+        <input type="text" id="memeTextInput" placeholder="Введи текст для мема..." style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+        <button class="submit-btn" onclick="addTextToMeme()" style="background: #4facfe; margin-bottom: 10px;">Добавить текст</button>
+        <div class="meme-container" id="memeContainer">
+          <img id="memeImage" src="" alt="Мем" crossorigin="anonymous">
+        </div>
+        <button class="submit-btn" onclick="publishMeme()" id="publishMemeBtn" style="display: none; background: #28a745;">Опубликовать мем 🚀</button>
+      </div>
+    </div>
+
     <div id="profile" class="tab-content">
       <div class="profile-header">
         <div class="profile-cover" id="profileCover"></div>
@@ -172,7 +201,13 @@
 
     <div id="suggest" class="tab-content">
       <form class="question-form" id="tgForm" onsubmit="sendMessage(event)">
-        <textarea id="questionText" placeholder="Напиши свою сплетню..." required style="padding: 14px; border-radius: 12px; border: 2px solid var(--border);"></textarea>
+        <textarea id="questionText" placeholder="Напиши свою сплетню..." required style="padding: 14px; border-radius: 12px; border: 2px solid var(--border); min-height: 100px;"></textarea>
+        
+        <div class="file-upload-wrapper">
+          <label for="imageInput" class="file-label" id="fileLabel">📷 Прикрепить фото</label>
+          <input type="file" id="imageInput" accept="image/*" onchange="previewImage(this)">
+        </div>
+
         <button type="submit" class="submit-btn" id="sendBtn">Отправить</button>
       </form>
     </div>
@@ -198,6 +233,7 @@
     let adminClicks = 0;
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
     let currentAdminView = 'pending';
+    let selectedFile = null;
 
     const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-paper'];
     const fonts = ['default', 'font-comfort', 'font-script'];
@@ -263,56 +299,44 @@
       } else {
         mainFeed.innerHTML = data.map(g => `
           <div class="gossip-card">
+            ${g.image_url ? `<img src="${g.image_url}" class="gossip-image">` : ''}
+            ${g.meme_base64 ? `<img src="${g.meme_base64}" class="gossip-image">` : ''}
             <div class="gossip-content">
               <div class="gossip-author-row">
                 <div class="author-avatar">🦊</div>
                 <div class="gossip-author">@${g.author}</div>
               </div>
-              <div class="gossip-text">${g.text}</div>
+              ${g.text ? `<div class="gossip-text">${g.text}</div>` : ''}
             </div>
           </div>
         `).join('');
       }
     }
 
-    // ОБНОВЛЕННАЯ ФУНКЦИЯ СОХРАНЕНИЯ ПРОФИЛЯ (ЗАЩИТА ОТ ПОДДЕЛОК)
     window.saveProfile = async () => {
       let uname = document.getElementById('newUsernameInput').value.trim().replace('@', '').toLowerCase();
       const bio = document.getElementById('newBioInput').value.trim();
       
-      // Строгая проверка: только a-z, 0-9 и _. Длина до 10.
       const regex = /^[a-z0-9_]{1,10}$/;
       if (!regex.test(uname)) { 
-        alert('Юзернейм должен содержать только английские буквы (без заглавных), цифры и _ (до 10 символов)!'); 
+        alert('Юзернейм должен содержать только английские строчные буквы, цифры и _ (до 10 символов)!'); 
         return; 
       }
 
-      // Проверяем, не занят ли ник кем-то другим (без учета регистра)
-      const { data: existingUser, error: checkError } = await supabase
-        .from('profiles')
-        .select('id')
-        .ilike('username', uname)
-        .neq('username', localStorage.getItem('myUsername')); // Исключаем себя
-
+      const { data: existingUser } = await supabase.from('profiles').select('id').ilike('username', uname).neq('username', localStorage.getItem('myUsername'));
       if (existingUser && existingUser.length > 0) {
-        alert('Этот ник уже занят кем-то другим (или слишком похож на существующий)!');
+        alert('Этот ник уже занят!');
         return;
       }
 
-      const { error } = await supabase.from('profiles').upsert({ 
-        username: uname, 
-        bio: bio, 
-        cover_url: localStorage.getItem('profileCover') 
-      }, { onConflict: 'username' });
+      const { error } = await supabase.from('profiles').upsert({ username: uname, bio: bio, cover_url: localStorage.getItem('profileCover') }, { onConflict: 'username' });
 
       if (!error) {
         localStorage.setItem('myUsername', uname);
         localStorage.setItem('myBio', bio);
         loadProfile();
         alert('Профиль сохранен!');
-      } else { 
-        alert('Ошибка при сохранении. Попробуйте другой ник.'); 
-      }
+      } else { alert('Этот ник уже занят!'); }
     }
 
     window.uploadCover = async (input) => {
@@ -394,20 +418,148 @@
       input.value = '';
     }
 
+    // --- МЕМ-ГЕНЕРАТОР ---
+    window.loadMemeImage = (input) => {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('memeImage').src = e.target.result;
+          document.getElementById('memeContainer').style.display = 'block';
+          document.getElementById('publishMemeBtn').style.display = 'block';
+          document.querySelectorAll('.draggable-text').forEach(el => el.remove());
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    window.addTextToMeme = () => {
+      const text = document.getElementById('memeTextInput').value;
+      if (!text) return;
+
+      const container = document.getElementById('memeContainer');
+      const newText = document.createElement('div');
+      newText.className = 'draggable-text';
+      newText.innerText = text;
+      newText.style.left = '50%';
+      newText.style.top = '50%';
+      newText.style.transform = 'translate(-50%, -50%)';
+      
+      let isDragging = false;
+      let offsetX, offsetY;
+
+      newText.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        offsetX = e.clientX - newText.getBoundingClientRect().left;
+        offsetY = e.clientY - newText.getBoundingClientRect().top;
+        newText.style.transform = 'none';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        let x = e.clientX - offsetX - container.getBoundingClientRect().left;
+        let y = e.clientY - offsetY - container.getBoundingClientRect().top;
+        x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
+        y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
+        newText.style.left = `${x}px`;
+        newText.style.top = `${y}px`;
+      });
+
+      document.addEventListener('mouseup', () => isDragging = false);
+
+      newText.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        offsetX = touch.clientX - newText.getBoundingClientRect().left;
+        offsetY = touch.clientY - newText.getBoundingClientRect().top;
+        newText.style.transform = 'none';
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        let x = touch.clientX - offsetX - container.getBoundingClientRect().left;
+        let y = touch.clientY - offsetY - container.getBoundingClientRect().top;
+        x = Math.max(0, Math.min(x, container.clientWidth - newText.clientWidth));
+        y = Math.max(0, Math.min(y, container.clientHeight - newText.clientHeight));
+        newText.style.left = `${x}px`;
+        newText.style.top = `${y}px`;
+      });
+
+      document.addEventListener('touchend', () => isDragging = false);
+
+      container.appendChild(newText);
+      document.getElementById('memeTextInput').value = '';
+    }
+
+    window.publishMeme = async () => {
+      const container = document.getElementById('memeContainer');
+      const btn = document.getElementById('publishMemeBtn');
+      if (!container.querySelector('img')) { alert('Загрузите картинку!'); return; }
+
+      btn.innerText = 'Создание мема...'; btn.disabled = true;
+
+      html2canvas(container, { useCORS: true, allowTaint: true, backgroundColor: null }).then(async (canvas) => {
+        const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+        const nick = localStorage.getItem('myUsername');
+
+        const { error } = await supabase.from('gossips').insert([{ 
+          author: nick, 
+          text: "Мем от @" + nick, 
+          status: 'pending', 
+          meme_base64: base64Image
+        }]);
+
+        if (error) { alert('Ошибка: ' + error.message); btn.innerText = 'Опубликовать мем 🚀'; btn.disabled = false; }
+        else {
+          btn.innerText = 'Мем на проверке! ✅'; btn.style.background = '#17a2b8';
+          setTimeout(() => {
+            btn.innerText = 'Опубликовать мем 🚀'; btn.style.background = '#28a745'; btn.disabled = false;
+            openTab('gossips', document.querySelector('.nav-btn'));
+          }, 2000);
+        }
+      });
+    }
+
+    // --- ОТПРАВКА СПЛЕТНИ (С ФОТО) ---
+    window.previewImage = (input) => {
+      if (input.files && input.files[0]) {
+        selectedFile = input.files[0];
+        document.getElementById('fileLabel').innerText = '✅ Фото выбрано';
+      }
+    }
+
     window.sendMessage = async (event) => {
       event.preventDefault();
       const btn = document.getElementById('sendBtn');
       const text = document.getElementById('questionText').value;
       const myName = localStorage.getItem('myUsername');
 
-      btn.innerText = 'Отправка...'; btn.disabled = true;
-      await supabase.from('gossips').insert([{ author: myName, text: text, status: 'pending' }]);
+      btn.innerText = 'Загрузка...'; btn.disabled = true;
+      let imageUrl = null;
+
+      if (selectedFile) {
+        const fileExt = selectedFile.name.split('.').pop();
+        const fileName = `gossip_${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from('images').upload(`public/${fileName}`, selectedFile);
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from('images').getPublicUrl(`public/${fileName}`);
+          imageUrl = urlData.publicUrl;
+        }
+      }
+
+      btn.innerText = 'Отправка...';
+      await supabase.from('gossips').insert([{ author: myName, text: text, status: 'pending', image_url: imageUrl }]);
       
       document.getElementById('questionText').value = '';
+      selectedFile = null;
+      document.getElementById('fileLabel').innerText = '📷 Прикрепить фото';
+      
       btn.innerText = 'Отправлено! ✅'; btn.style.background = '#28a745';
       setTimeout(() => { btn.innerText = 'Отправить'; btn.style.background = ''; btn.disabled = false; openTab('gossips', document.querySelector('.nav-btn')); }, 1500);
     };
 
+    // --- АДМИНКА ---
     window.openAdmin = () => {
       adminClicks++;
       if (adminClicks >= 5) {
@@ -439,7 +591,6 @@
       
       } else if (currentAdminView === 'users') {
         const { data: profiles } = await supabase.from('profiles').select('*').order('username');
-        
         adminFeed.innerHTML = (!profiles || profiles.length === 0) ? `<div class="empty-feed">Нет пользователей</div>` : profiles.map(p => `
           <div class="user-admin-item">
             <span>@${p.username}</span>
@@ -455,6 +606,8 @@
         adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Нет новых сплетен</div>` : data.map(g => `
           <div class="admin-chat-item">
             <strong>@${g.author}</strong><br>
+            ${g.image_url ? `<img src="${g.image_url}" style="max-width:100%; border-radius:8px; margin-bottom:5px;">` : ''}
+            ${g.meme_base64 ? `<img src="${g.meme_base64}" style="max-width:100%; border-radius:8px; margin-bottom:5px;">` : ''}
             <span style="color:var(--text-muted);">${g.text}</span>
             <button class="submit-btn" style="margin-top:5px; background:#28a745; padding:8px;" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
           </div>
@@ -462,30 +615,16 @@
       }
     }
 
-    // Функция смены ника из админки (с проверкой)
     window.changeUserNickname = async (userId) => {
       const newName = document.getElementById(`input_user_${userId}`).value.trim().toLowerCase();
+      if (!/^[a-z0-9_]{1,10}$/.test(newName)) { alert('Только англ. строчные буквы, цифры и _ (до 10 символов)!'); return; }
       
-      if (!/^[a-z0-9_]{1,10}$/.test(newName)) {
-        alert('Только англ. буквы (без заглавных), цифры и _ (до 10 символов)!');
-        return;
-      }
-
-      // Проверка, не занят ли ник кем-то другим
       const { data: existingUser } = await supabase.from('profiles').select('id').ilike('username', newName).neq('id', userId);
-      if (existingUser && existingUser.length > 0) {
-        alert('Этот ник уже занят!');
-        return;
-      }
+      if (existingUser && existingUser.length > 0) { alert('Этот ник уже занят!'); return; }
 
       const { error } = await supabase.from('profiles').update({ username: newName }).eq('id', userId);
-      
-      if (!error) {
-        alert('Ник изменен!');
-        loadAdminData();
-      } else {
-        alert('Ошибка при смене ника.');
-      }
+      if (!error) { alert('Ник изменен!'); loadAdminData(); }
+      else { alert('Ошибка при смене ника.'); }
     }
 
     window.publishGossip = async (id) => {
@@ -520,6 +659,11 @@
       
       loadGossips();
       subscribeToChanges();
+
+      // Подключаем html2canvas для мемов
+      const script = document.createElement('script');
+      script.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+      document.head.appendChild(script);
     };
   </script>
 </body>

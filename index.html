@@ -20,10 +20,8 @@
     body.font-comfort { --font-main: 'Comfortaa', cursive; }
     body.font-script { --font-main: 'Marck Script', cursive; }
     
-    /* ФОНЫ */
     body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
     body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px), linear-gradient(rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px, 30px 30px; }
-    body.bg-rain { --bg-color: #1a1a2e; background-image: repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(255,255,255,0.08) 10px, rgba(255,255,255,0.08) 11px); }
     body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -41,14 +39,7 @@
     }
 
     .top-bar { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: absolute; top: 0; left: 0; z-index: 10; }
-    
-    .profile-btn {
-      width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--accent);
-      display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer;
-      box-shadow: 0 0 10px var(--accent); transition: transform 0.2s;
-    }
-    .profile-btn:hover { transform: scale(1.05); }
-
+    .profile-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--card-bg); border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; box-shadow: 0 0 10px var(--accent); }
     .controls { display: flex; gap: 10px; }
     .icon-btn { background: var(--card-bg); border: 2px solid var(--border); border-radius: 50%; width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
@@ -95,7 +86,6 @@
     .empty-feed { text-align: center; padding: 40px 20px; color: var(--text-muted); }
     footer { text-align: center; margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); padding-bottom: 20px; }
     
-    /* Админка */
     .admin-chat-item { background: var(--bg-color); border: 1px solid var(--border); padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.9rem; }
     .admin-nav { display: flex; gap: 10px; margin-bottom: 15px; }
     .admin-nav button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--card-bg); color: var(--text-main); font-weight: bold; cursor: pointer; border: 2px solid var(--border); font-size: 0.8rem; }
@@ -106,7 +96,6 @@
 
   <div class="top-bar">
     <div class="profile-btn" id="myAvatarBtn" onclick="openTab('profile', document.querySelectorAll('.nav-btn')[3])">🦊</div>
-    
     <div class="controls">
       <button class="icon-btn" onclick="cycleBackground()" id="bgBtn" title="Сменить фон">🌌</button>
       <button class="icon-btn" onclick="cycleFont()" id="fontBtn" title="Сменить шрифт">🅰️</button>
@@ -121,8 +110,8 @@
 
   <div class="nav-tabs">
     <button class="nav-btn active" onclick="openTab('gossips', this)">📰 Лента</button>
-    <button class="nav-btn" onclick="openTab('messenger', this)">💬 Мессенджер</button>
-    <button class="nav-btn" id="chatsTabBtn" onclick="openTab('chatsList', this)">📥 Чаты <span id="unreadBadge" style="display:none; background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.6rem; position:absolute; top:2px; right:2px;">1</span></button>
+    <button class="nav-btn" onclick="openTab('messenger', this)">💬 Поиск</button>
+    <button class="nav-btn" id="chatsTabBtn" onclick="openTab('chatsList', this)">📥 Чаты <span id="unreadBadge" style="display:none; background:red; color:white; padding:2px 6px; border-radius:10px; font-size:0.6rem; position:absolute; top:2px; right:2px;">!</span></button>
     <button class="nav-btn" onclick="openTab('profile', this)">👤 Профиль</button>
     <button class="nav-btn" onclick="openTab('suggest', this)">📝 Предложить</button>
     <button class="nav-btn" id="adminTabBtn" onclick="openTab('admin', this)">🛠️ Админка</button>
@@ -133,29 +122,23 @@
       <div class="feed-container" id="mainFeed"></div>
     </div>
 
-    <!-- МЕССЕНДЖЕР (Поиск людей) -->
     <div id="messenger" class="tab-content">
       <h3 style="margin-bottom: 15px;">Поиск людей 🔍</h3>
       <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()">
       <div id="searchResults"></div>
     </div>
 
-    <!-- СПИСОК ЧАТОВ (Новая вкладка) -->
     <div id="chatsList" class="tab-content">
       <h3 style="margin-bottom: 15px;">Твои чаты 💬</h3>
-      <div id="myChatsList">
-        <div class="empty-feed">Загрузка...</div>
-      </div>
+      <div id="myChatsList"></div>
     </div>
 
-    <!-- ОКНО ЧАТА (Открывается поверх) -->
     <div id="chatWindow" class="tab-content">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <button onclick="openTab('chatsList', document.getElementById('chatsTabBtn'))" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">⬅️</button>
         <h3 style="margin:0;">@<span id="chatTargetName"></span></h3>
         <div style="width: 24px;"></div>
       </div>
-      
       <div class="chat-container">
         <div class="chat-messages" id="chatMessages"></div>
         <div class="chat-input-row">
@@ -165,7 +148,6 @@
       </div>
     </div>
 
-    <!-- ПРОФИЛЬ -->
     <div id="profile" class="tab-content">
       <div class="profile-header">
         <div class="profile-cover" id="profileCover"></div>
@@ -175,17 +157,13 @@
           <div class="profile-bio" id="profileBio">Тут будет твое био</div>
         </div>
       </div>
-      
       <div class="question-form">
         <label>Сменить юзернейм (только англ., до 10 символов)</label>
         <input type="text" id="newUsernameInput" placeholder="username" maxlength="10" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
-        
         <label>Сменить био</label>
         <input type="text" id="newBioInput" placeholder="О себе" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
-        
         <label>Обои профиля</label>
         <input type="file" id="coverInput" accept="image/*" onchange="uploadCover(this)">
-        
         <button class="submit-btn" onclick="saveProfile()">Сохранить профиль</button>
       </div>
     </div>
@@ -197,7 +175,6 @@
       </form>
     </div>
 
-    <!-- АДМИНКА -->
     <div id="admin" class="tab-content">
       <div class="admin-nav">
         <button id="btnAdminPending" class="active" onclick="switchAdminTab('pending')">На проверку</button>
@@ -212,13 +189,23 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
     const supabase = createClient('https://owcxvgvajlbrpirwvjhr.supabase.co', 'sb_publishable_ML7qbFIVKcg4z_lD8Gr0CQ_wh611unv');
 
+    // КРУТЫЕ НИКИ ПО УМОЛЧАНИЮ
+    const defaultNicks = ["altyxa", "shtyrmovik", "sigma", "skibidi", "chad", "gyatt", "rizzler", "sigma_boy", "ohio", "fanum_tax", "kai_cenat", "grimace", "amogus", "sussy", "gigachad", "npc", "cringe", "based", "copium", "hopium", "pov", "ratio", "cap", "bussin"];
+
     let currentChatTarget = null;
     let adminClicks = 0;
     let currentBgIndex = localStorage.getItem('bgIndex') || 0;
     let currentFontIndex = localStorage.getItem('fontIndex') || 0;
+    let currentAdminView = 'pending';
 
-    const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-rain', 'bg-paper'];
+    const backgrounds = ['default', 'bg-stars', 'bg-matrix', 'bg-paper'];
     const fonts = ['default', 'font-comfort', 'font-script'];
+
+    // Генерация ника при первом входе
+    function generateDefaultNick() {
+      const randomNick = defaultNicks[Math.floor(Math.random() * defaultNicks.length)];
+      return `${randomNick}${Math.floor(10 + Math.random() * 90)}`;
+    }
 
     window.cycleBackground = () => {
       currentBgIndex = (parseInt(currentBgIndex) + 1) % backgrounds.length;
@@ -241,15 +228,66 @@
       document.getElementById('themeBtn').innerText = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
     }
 
-    // --- ВАЛИДАЦИЯ ЮЗЕРНЕЙМА ---
+    // --- REALTIME ПОДПИСКИ (МГНОВЕННОЕ ОБНОВЛЕНИЕ) ---
+    function subscribeToChanges() {
+      // Слушаем сплетни (для ленты и админки)
+      supabase.channel('gossips-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'gossips' }, payload => {
+          loadGossips(); // Перезагружаем ленту
+          if (document.getElementById('admin').classList.contains('active')) {
+            loadAdminData(); // Если мы в админке, обновляем её
+          }
+        }).subscribe();
+
+      // Слушаем сообщения (для чатов)
+      supabase.channel('messages-channel')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+          const myName = localStorage.getItem('myUsername') || 'гость';
+          const newMsg = payload.new;
+          
+          // Если сообщение пришло нам и мы не в чате с этим человеком
+          if (newMsg.receiver_name === myName && currentChatTarget !== newMsg.sender_name) {
+            document.getElementById('unreadBadge').style.display = 'block';
+          }
+          
+          // Если мы в чате с этим человеком, обновляем сообщения
+          if (currentChatTarget && (newMsg.sender_name === currentChatTarget || newMsg.receiver_name === currentChatTarget)) {
+            loadMessages();
+          }
+          // Обновляем список чатов, если мы на этой вкладке
+          if (document.getElementById('chatsList').classList.contains('active')) {
+            loadChats();
+          }
+        }).subscribe();
+    }
+
+    // --- ЗАГРУЗКА СПЛЕТЕН ---
+    async function loadGossips() {
+      const { data } = await supabase.from('gossips').select('*').eq('status', 'published').eq('is_deleted', false).order('id', { ascending: false });
+      
+      const mainFeed = document.getElementById('mainFeed');
+      if (!data || data.length === 0) {
+        mainFeed.innerHTML = `<div class="empty-feed">Пока сплетен нет...</div>`;
+      } else {
+        mainFeed.innerHTML = data.map(g => `
+          <div class="gossip-card">
+            <div class="gossip-content">
+              <div class="gossip-author-row">
+                <div class="author-avatar">🦊</div>
+                <div class="gossip-author">@${g.author}</div>
+              </div>
+              <div class="gossip-text">${g.text}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // --- ПРОФИЛЬ ---
     window.saveProfile = async () => {
-      let uname = document.getElementById('newUsernameInput').value.trim();
+      let uname = document.getElementById('newUsernameInput').value.trim().replace('@', '');
       const bio = document.getElementById('newBioInput').value.trim();
       
-      // Убираем @ если есть
-      uname = uname.replace('@', '');
-
-      // Проверка на английский и цифры
       const regex = /^[a-zA-Z0-9_]{1,10}$/;
       if (!regex.test(uname)) {
         alert('Юзернейм должен содержать только английские буквы, цифры и _ (максимум 10 символов)!');
@@ -268,7 +306,7 @@
         loadProfile();
         alert('Профиль сохранен!');
       } else {
-        alert('Этот ник уже занят, попробуй другой!');
+        alert('Этот ник уже занят!');
       }
     }
 
@@ -285,27 +323,34 @@
     }
 
     async function loadProfile() {
-      const savedUname = localStorage.getItem('myUsername') || 'гость';
+      const savedUname = localStorage.getItem('myUsername');
+      if (!savedUname) {
+        const newNick = generateDefaultNick();
+        localStorage.setItem('myUsername', newNick);
+        // Создаем профиль в базе
+        await supabase.from('profiles').insert([{ username: newNick }]);
+      }
+
+      const currentUname = localStorage.getItem('myUsername');
       const savedBio = localStorage.getItem('myBio') || 'Тут будет твое био';
       const savedCover = localStorage.getItem('profileCover');
 
-      document.getElementById('profileUsername').innerText = `@${savedUname}`;
+      document.getElementById('profileUsername').innerText = `@${currentUname}`;
       document.getElementById('profileBio').innerText = savedBio;
       if (savedCover) document.getElementById('profileCover').style.backgroundImage = `url(${savedCover})`;
     }
 
-    // --- СПИСОК ЧАТОВ ---
+    // --- ЧАТЫ ---
     window.loadChats = async () => {
-      const myName = localStorage.getItem('myUsername') || 'гость';
+      const myName = localStorage.getItem('myUsername');
       const { data } = await supabase.from('messages').select('*').or(`sender_name.eq.${myName},receiver_name.eq.${myName}`).order('created_at', { ascending: false });
       
       const chatBox = document.getElementById('myChatsList');
       if (!data || data.length === 0) {
-        chatBox.innerHTML = `<div class="empty-feed">У тебя пока нет переписок. Найди друга в поиске!</div>`;
+        chatBox.innerHTML = `<div class="empty-feed">У тебя пока нет переписок.</div>`;
         return;
       }
 
-      // Уникальные собеседники
       const users = new Set();
       data.forEach(msg => {
         if (msg.sender_name !== myName) users.add(msg.sender_name);
@@ -317,28 +362,20 @@
           <strong>@${user}</strong>
         </div>
       `).join('');
-      
-      // Показываем бейджик новых сообщений (просто для примера)
-      document.getElementById('unreadBadge').style.display = 'block';
     }
 
     window.searchUsers = async () => {
       const query = document.getElementById('searchUserInput').value.replace('@', '').trim().toLowerCase();
       const resultsBox = document.getElementById('searchResults');
-
-      if (query.length < 2) {
-        resultsBox.innerHTML = '';
-        return;
-      }
+      if (query.length < 2) { resultsBox.innerHTML = ''; return; }
 
       const { data } = await supabase.from('profiles').select('*').ilike('username', `%${query}%`);
-      
       if (!data || data.length === 0) {
         resultsBox.innerHTML = `<div class="empty-feed" style="padding: 10px;">Никого не найдено</div>`;
       } else {
         resultsBox.innerHTML = data.map(user => `
           <div class="admin-chat-item" style="cursor: pointer;" onclick="openChat('${user.username}')">
-            <strong>@${user.username}</strong> <br> <small>${user.bio || 'Нет био'}</small>
+            <strong>@${user.username}</strong>
           </div>
         `).join('');
       }
@@ -353,7 +390,7 @@
 
     async function loadMessages() {
       if (!currentChatTarget) return;
-      const myName = localStorage.getItem('myUsername') || 'гость';
+      const myName = localStorage.getItem('myUsername');
 
       const { data } = await supabase.from('messages')
         .select('*')
@@ -365,29 +402,38 @@
         chatBox.innerHTML = `<div class="empty-feed">Начни диалог с @${currentChatTarget}</div>`;
       } else {
         chatBox.innerHTML = data.map(msg => `
-          <div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">
-            ${msg.text}
-          </div>
+          <div class="msg ${msg.sender_name === myName ? 'me' : 'them'}">${msg.text}</div>
         `).join('');
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
 
     window.sendMessageToUser = async () => {
-      if (!currentChatTarget) return alert('Выбери собеседника!');
+      if (!currentChatTarget) return;
       const input = document.getElementById('chatInput');
-      const myName = localStorage.getItem('myUsername') || 'гость';
+      const myName = localStorage.getItem('myUsername');
       if(!input.value.trim()) return;
 
       await supabase.from('messages').insert([{
-        sender_name: myName,
-        receiver_name: currentChatTarget,
-        text: input.value
+        sender_name: myName, receiver_name: currentChatTarget, text: input.value
       }]);
-
       input.value = '';
-      loadMessages();
     }
+
+    // --- ОТПРАВКА СПЛЕТНИ ---
+    window.sendMessage = async (event) => {
+      event.preventDefault();
+      const btn = document.getElementById('sendBtn');
+      const text = document.getElementById('questionText').value;
+      const myName = localStorage.getItem('myUsername');
+
+      btn.innerText = 'Отправка...'; btn.disabled = true;
+      await supabase.from('gossips').insert([{ author: myName, text: text, status: 'pending' }]);
+      
+      document.getElementById('questionText').value = '';
+      btn.innerText = 'Отправлено! ✅'; btn.style.background = '#28a745';
+      setTimeout(() => { btn.innerText = 'Отправить'; btn.style.background = ''; btn.disabled = false; openTab('gossips', document.querySelector('.nav-btn')); }, 1500);
+    };
 
     // --- АДМИНКА ---
     window.openAdmin = () => {
@@ -397,32 +443,45 @@
         if (pass === '20120521s') {
           document.getElementById('adminTabBtn').style.display = 'block';
           openTab('admin', document.getElementById('adminTabBtn'));
+          loadAdminData();
         }
         adminClicks = 0;
       }
     }
 
     window.switchAdminTab = async (tab) => {
+      currentAdminView = tab;
       document.getElementById('btnAdminPending').classList.remove('active');
       document.getElementById('btnAdminChats').classList.remove('active');
       document.getElementById(tab === 'pending' ? 'btnAdminPending' : 'btnAdminChats').classList.add('active');
+      loadAdminData();
+    }
 
+    async function loadAdminData() {
       const adminFeed = document.getElementById('adminFeed');
-      if (tab === 'chats') {
+      if (currentAdminView === 'chats') {
         const { data } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
-        if (!data || data.length === 0) {
-          adminFeed.innerHTML = `<div class="empty-feed">Переписок нет</div>`;
-        } else {
-          adminFeed.innerHTML = data.map(msg => `
-            <div class="admin-chat-item">
-              <strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br>
-              <span style="color:var(--text-muted);">${msg.text}</span>
-            </div>
-          `).join('');
-        }
+        adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Переписок нет</div>` : data.map(msg => `
+          <div class="admin-chat-item">
+            <strong>@${msg.sender_name}</strong> ➔ <strong>@${msg.receiver_name}</strong><br>
+            <span style="color:var(--text-muted);">${msg.text}</span>
+          </div>
+        `).join('');
       } else {
-        adminFeed.innerHTML = `<div class="empty-feed">Тут сплетни на проверку</div>`;
+        const { data } = await supabase.from('gossips').select('*').eq('status', 'pending');
+        adminFeed.innerHTML = (!data || data.length === 0) ? `<div class="empty-feed">Нет новых сплетен</div>` : data.map(g => `
+          <div class="admin-chat-item">
+            <strong>@${g.author}</strong><br>
+            <span style="color:var(--text-muted);">${g.text}</span>
+            <button class="submit-btn" style="margin-top:5px; background:#28a745; padding:8px;" onclick="publishGossip('${g.id}')">✅ Опубликовать</button>
+          </div>
+        `).join('');
       }
+    }
+
+    window.publishGossip = async (id) => {
+      await supabase.from('gossips').update({ status: 'published' }).eq('id', id);
+      loadAdminData();
     }
 
     window.openTab = (tabName, btn) => {
@@ -439,15 +498,18 @@
       }
     }
 
-    window.onload = () => {
+    window.onload = async () => {
       const bg = backgrounds[currentBgIndex];
       if (bg !== 'default') document.body.classList.add(bg);
       const font = fonts[currentFontIndex];
       if (font !== 'default') document.body.classList.add(font);
       
+      await loadProfile();
       document.getElementById('newUsernameInput').value = localStorage.getItem('myUsername') || '';
       document.getElementById('newBioInput').value = localStorage.getItem('myBio') || '';
-      loadProfile();
+      
+      loadGossips();
+      subscribeToChanges(); // Включаем "живое" обновление
     };
   </script>
 </body>

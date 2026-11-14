@@ -20,6 +20,7 @@
     body.font-comfort { --font-main: 'Comfortaa', cursive; }
     body.font-script { --font-main: 'Marck Script', cursive; }
     
+    /* ФОНЫ */
     body.bg-stars { --bg-color: #0b0b1a; background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)); background-size: 200px 200px; }
     body.bg-matrix { --bg-color: #000; background-image: linear-gradient(180deg, rgba(0,255,0,0.15) 0%, transparent 10%, transparent 90%, rgba(0,255,0,0.15) 100%), linear-gradient(90deg, rgba(0,255,0,0.1) 1px, transparent 1px); background-size: 100% 100%, 30px 30px; }
     body.bg-paper { --bg-color: #fdfbf7; background-image: linear-gradient(#e0e0e0 1px, transparent 1px), linear-gradient(90deg, #e0e0e0 1px, transparent 1px); background-size: 20px 20px; }
@@ -63,6 +64,8 @@
     .gossip-author { font-size: 0.85rem; font-weight: 800; color: var(--accent); }
     .gossip-text { font-size: 1rem; line-height: 1.5; color: var(--text-main); font-weight: 600; margin-bottom: 15px; }
 
+    /* Мессенджер */
+    .search-user-input { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); color: var(--text-main); margin-bottom: 15px; outline: none; }
     .chat-container { display: flex; flex-direction: column; height: 400px; background: var(--bg-color); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; }
     .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .msg { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 0.9rem; }
@@ -71,6 +74,7 @@
     .chat-input-row { display: flex; padding: 10px; background: var(--card-bg); border-top: 1px solid var(--border); gap: 10px; }
     .chat-input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none; }
 
+    /* Профиль */
     .profile-header { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .profile-cover { width: 100%; height: 120px; background: var(--accent-light); border-radius: 16px; margin-bottom: -40px; background-size: cover; background-position: center; }
     .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--card-bg); border: 4px solid var(--card-bg); display: flex; align-items: center; justify-content: center; font-size: 2rem; position: relative; z-index: 2; }
@@ -121,7 +125,7 @@
 
     <div id="messenger" class="tab-content">
       <h3 style="margin-bottom: 15px;">Поиск людей 🔍</h3>
-      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()" style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--card-bg); margin-bottom: 15px;">
+      <input type="text" class="search-user-input" id="searchUserInput" placeholder="Введи @username друга..." oninput="searchUsers()">
       <div id="searchResults"></div>
     </div>
 
@@ -223,7 +227,6 @@
 
     // --- REALTIME (МГНОВЕННОЕ ОБНОВЛЕНИЕ) ---
     function subscribeToChanges() {
-      // Следим за новыми сообщениями
       supabase.channel('messages-channel')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
           const myName = localStorage.getItem('myUsername') || 'гость';
@@ -241,7 +244,6 @@
           }
         }).subscribe();
 
-      // Следим за сплетнями
       supabase.channel('gossips-channel')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'gossips' }, payload => {
           loadGossips();
